@@ -1,6 +1,6 @@
-# Mist Installer Web UI
+# Mist Switch Operator Web UI
  
-This application provides a single page app for installers to claim new devices, assign them to a site/floorplan and set the first settings.
+This application provides a single page app to easily change basic settings on switch ports
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
@@ -9,10 +9,9 @@ This program is free software: you can redistribute it and/or modify it under th
 <img src="https://github.com/tmunzer/mist_claim_web_ui/blob/main/._readme/claim.png"  width="75%"  />
 
 ## Features
-- Retrieve and display Org and Site newly claimed devices 
-- Claim new devices
-- Edit newly claimed devices settings
-- Assign newly claimed devices to Site/Floorplan
+- list switches
+- single/multi ports configuration changes
+- update switch settings
 
 <img src="https://github.com/tmunzer/mist_claim_web_ui/blob/main/._readme/login.png"  width="45%"  />
 <img src="https://github.com/tmunzer/mist_claim_web_ui/blob/main/._readme/edit.png" width="45%"  />
