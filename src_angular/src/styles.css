@@ -24,6 +24,13 @@
     */
 }
 
+html,
+body {
+    min-height: 100vh;
+    height: auto;
+    margin: 0;
+}
+
 body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
