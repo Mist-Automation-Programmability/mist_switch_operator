@@ -1,0 +1,268 @@
+<mat-card class="card-outer">
+
+    <div fxLayout="column">
+        <div fxLayout="column" class="top-bar-container">
+            <div fxLayout="row wrap" fxLayoutAlign="space-between center" class="top-bar mat-elevation-z8">
+
+                <button mat-button (click)="getDevices()" [disabled]="topBarLoading" style="height: 100%; margin: auto ">
+                    <mat-icon matTooltip="Refresh list" aria-label="Refresh list">refresh</mat-icon>
+                    <span>Refresh List</span>
+                </button>
+
+            </div>
+
+            <div style="width: 100%; height: 4px; background-color: rgb(111 157 43);" *ngIf="topBarLoading == false">
+            </div>
+            <mat-progress-bar mode="indeterminate" color="accent" *ngIf="topBarLoading == true"></mat-progress-bar>
+
+        </div>
+
+        <div style="background-color: white; " fxLayout="column">
+
+            <div fxLayout="row" fxLayoutAlign="stretch" style="min-height: 800px;">
+                <div fxLayout="column" style="width:30em" class="mat-elevation-z8">
+                    <div fxLayout="column" class="psk-table-container">
+                        <table mat-table [dataSource]="filteredDevicesDatase">
+                            <ng-container matColumnDef="device">
+                                <th mat-header-cell *matHeaderCellDef fxLayout="column" fxLayoutAlign="space-between stretch">
+                                    <mat-form-field>
+                                        <mat-label>Filter</mat-label>
+                                        <input matInput (keyup)="applyFilter($event)" placeholder="Ex. switch name" #input>
+                                    </mat-form-field>
+                                </th>
+                                <td mat-cell *matCellDef="let element" [ngClass]="{selected: editingDevice && element.mac === editingDevice.mac}">
+                                    <a role="button" (click)="editDevice(element)" class="device" fxLayout="row" fxLayoutAlign="space-between stretch" style="cursor: pointer;">
+                                        <div fxLayout="row" fxLayoutAlign="center center">
+                                            <mat-icon *ngIf="!element.vm_mac" aria-hidden="false" [ngStyle]="{'color':element.status === 'connected' ? 'green' : 'lightgray' }">
+                                                check_box_outline_blank
+                                            </mat-icon>
+                                            <mat-icon *ngIf="element.vc_mac" aria-hidden="false" [ngStyle]="{'color':element.status === 'connected' ? 'green' : 'lightgray' }">
+                                                filter_none</mat-icon>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="scenter center" style="margin-left: 2em;">
+                                            <div *ngIf="element.name">{{element.name}}
+                                            </div>
+                                            <div *ngIf="!element.name">{{element.mac}}
+                                            </div>
+                                        </div>
+
+                                        <div fxLayout="column" fxFlex fxLayoutAlign="space-between end" style="color: gray;">
+                                            <div>{{element.mac}}</div>
+                                            <div>Model: {{element.model}}</div>
+                                        </div>
+                                    </a>
+                                </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                        <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"></mat-paginator>
+                    </div>
+                </div>
+
+
+
+
+
+
+                <div fxLayout="column" fxLayoutAlign="center stretch" fxFlex class="mat-elevation-z2">
+                    <div *ngIf="!editingDevice && !deviceLoading" style="text-align: center;font-size: large;color: gray;">
+                        Please select a device...
+                    </div>
+
+                    <div *ngIf="deviceLoading" fxLayout="row" fxLayoutAlign="center stretch">
+                        <mat-spinner color="accent"></mat-spinner>
+                    </div>
+
+                    <div *ngIf="editingDevice && !deviceLoading" fxFlex fxLayout="row">
+                        <div matColumnDef="ports" fxLayout="column" style="margin-left: 1em;">
+                            <mat-form-field>
+                                <mat-label>Filter</mat-label>
+                                <input matInput (keyup)="applyPortFilter($event)" placeholder="Ex. switch name" #input>
+                            </mat-form-field>
+                            <div *ngFor="let switchport of displayedPorts | mapToArray" [ngClass]="{'selected': editingPorts.includes(switchport.value)}" class="selectable">
+                                <a role="button" class="device" fxLayout="row" fxLayoutAlign="space-between stretch" style="cursor: pointer;">
+                                    <div fxLayout="row" style="font-weight: lighter;padding: 0.5em;border-bottom: solid 1px lightgray;width: 100%;">
+                                        <mat-checkbox fxFill [checked]="canbeChecked(switchport.value.port)" (change)="selectPort(switchport.value)" class="expand-checkbox">
+                                            {{switchport.key}}
+                                        </mat-checkbox>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+
+
+                        <div fxFlex fxLayout="column" style="margin:3em" class="no-cursor">
+                            <div mat-dialog-content fxLayout="column">
+                                <div *ngFor='let member of editingDeviceSettings.members; let index = index'>
+                                    <div style="background-color: #fafafa; border: solid 1px gray; border-radius: 10px; height: 100px; padding: 10px 20px" fxLayout="column" fxLayoutAlign="start stretch">
+                                        <div style="font-weight: lighter;">
+                                            {{editingDevice.model}}
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start stretch">
+                                            <div style="font-weight: lighter; font-size: larger; height: 100%;" fxLayoutAlign="center center">
+                                                {{index}}</div>
+                                            <div class="ports-container">
+                                                <div class="ports-text" fxLayout="row" fxLayoutAlign="center center" fxFlex="grow">
+                                                    <span style="width: 60px;height: 20px;text-align: center;">RJ45</span>
+                                                </div>
+                                                <div *ngFor='let port of member.ports' style="cursor: pointer; z-index: 10;">
+                                                    <div *ngIf='port | startsWith: "ge"'>
+                                                        <div [matTooltip]="port" class="normal-port" (click)="selectPortFromSwitchView(port)" [ngClass]="{'selected-port': editingPortNames.includes(port)}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="ports-text" fxLayout="row" fxLayoutAlign="center center" fxFlex="grow">
+                                                    <span style="width: 60px;height: 20px;text-align: center;">SFP</span>
+                                                </div>
+                                                <div *ngFor='let port of member.ports' style="cursor: pointer; z-index: 10;">
+                                                    <div *ngIf='port | startsWith: "xe"'>
+                                                        <div [matTooltip]="port" class="normal-port" (click)="selectPortFromSwitchView(port)" [ngClass]="{'selected-port': editingPortNames.includes(port)}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div fxLayout="row wrap" fxLayoutAlign="center center">
+                                    <div fxLayout="column" fxLayoutAlign="center center" style="margin-bottom: 2em;" class="no-cursor">
+                                        <div *ngIf="editingDevice.status === 'connected'" fxLayout="row" fxLayoutAlign="center center">
+                                            <mat-icon aria-hidden="false" style="color: green; margin-right:1em;">
+                                                cloud_queue</mat-icon>
+                                            <div>Device is CONNECTED to the Cloud</div>
+                                        </div>
+                                        <div *ngIf="!editingDevice.status === 'connected'" fxLayout="row" fxLayoutAlign="center center">
+                                            <mat-icon aria-hidden="false" style="color: gray; margin-right:1em">
+                                                cloud_off
+                                            </mat-icon>
+                                            <div>Device is NOT CONNECTED to the Cloud</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div *ngIf=" editingPorts.length == 0">
+                                    <div *ngFor="let member of editingDeviceSettings.members; let index = index">
+                                        <mat-divider inset="true" style="margin-bottom: 1em;"></mat-divider>
+                                        <div fxLayout="row wrap" fxLayoutAlign="space-between stretch">
+                                            <mat-form-field appearance="outline">
+                                                <mat-label>MODEL</mat-label>
+                                                <input matInput disabled [ngModel]="member.model" />
+                                            </mat-form-field>
+                                            <mat-form-field appearance="outline">
+                                                <mat-label>SERIAL</mat-label>
+                                                <input matInput disabled [ngModel]="member.serial" />
+                                            </mat-form-field>
+                                            <mat-form-field appearance="outline">
+                                                <mat-label>MAC ADDRESS</mat-label>
+                                                <input matInput disabled [ngModel]="member.mac" />
+                                            </mat-form-field>
+                                            <mat-form-field appearance="outline">
+                                                <mat-label>Member</mat-label>
+                                                <input matInput disabled [ngModel]="index" />
+                                            </mat-form-field>
+                                            <mat-form-field appearance="outline">
+                                                <mat-label>VC Role</mat-label>
+                                                <input matInput disabled [ngModel]="member.vc_role" />
+                                            </mat-form-field>
+                                        </div>
+                                        <span>PoE</span>
+                                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                                            <mat-form-field appearance="outline">
+                                                <mat-label>Power Draw</mat-label>
+                                                <input matInput disabled [ngModel]="member.poe.power_draw" />
+                                            </mat-form-field>
+                                            <!-- <mat-progress-bar mode="determinate" [value]="powerDraw(member)"></mat-progress-bar> -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div *ngIf=" editingPorts.length >= 1">
+                                    <div fxLayout="row">
+                                        <mat-divider inset="true" style="margin: 1em;"></mat-divider>
+                                        <span *ngIf="editingPorts.length == 1" class="no-cursor" style="color: black; font-weight: light; width: 20em; text-align: center;" fxFlex="auto">{{editingPorts[0].port}}</span>
+                                        <span *ngIf="editingPorts.length > 1" class="no-cursor" style="color: black; font-weight: light; width: 20em; text-align: center;" fxFlex="auto">Multi Selection</span>
+                                        <mat-divider inset="true" style="margin: 1em;"></mat-divider>
+                                    </div>
+                                    <form [formGroup]="frmPort" class="create-form" fxLayout="column">
+                                        <div fxLayout="row" fxLayoutAlign="start center">
+                                            <div fxLayout="column" class="mist-space-around">
+                                                <mat-label>Port Status</mat-label>
+                                                <mat-slide-toggle formControlName="enabled">
+                                                    <span *ngIf="frmPort.value.enabled == true">Enabled </span>
+                                                    <span *ngIf="frmPort.value.enabled != true">Disabled </span>
+                                                </mat-slide-toggle>
+                                            </div>
+                                            <div fxLayout="column" class="mist-space">
+                                                <mat-label>PoE</mat-label>
+                                                <mat-slide-toggle formControlName="poe">
+                                                    <span *ngIf="frmPort.value.poe == true">Enabled </span>
+                                                    <span *ngIf="frmPort.value.poe != true">Disabled </span>
+                                                </mat-slide-toggle>
+                                            </div>
+                                        </div>
+                                        <mat-form-field appearance="outline" class="mist-space">
+                                            <mat-label>VLAN</mat-label>
+                                            <mat-select formControlName="port_network">
+                                                <mat-option>None</mat-option>
+                                                <mat-option *ngFor="let vlan of editingDeviceSettings.networks | mapToArray" [value]="vlan.key">
+                                                    {{vlan.key}} ({{vlan.value.vlan_id}})
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+
+                                        <div class="mist-space-around" fxLayout="column">
+                                            <mat-label>Auto-Negociation</mat-label>
+                                            <mat-slide-toggle formControlName="autoneg">
+                                                <span *ngIf="frmPort.value.autoneg == true">Enabled </span>
+                                                <span *ngIf="frmPort.value.autoneg != true">Disabled </span>
+                                            </mat-slide-toggle>
+                                        </div>
+                                        <div class="mist-space">
+
+                                            <mat-form-field appearance="outline">
+                                                <mat-label>SPEED</mat-label>
+                                                <mat-select formControlName="speed" [disabled]="frmPort.value.autoneg">
+                                                    <mat-option>None</mat-option>
+                                                    <mat-option [value]="auto">Auto</mat-option>
+                                                    <mat-option [value]="10">10M</mat-option>
+                                                    <mat-option [value]="100">100M</mat-option>
+                                                    <mat-option [value]="1000">1G</mat-option>
+                                                    <mat-option [value]="2500">2.5G</mat-option>
+                                                    <mat-option [value]="5000">5G</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+
+                                            <mat-form-field appearance="outline">
+                                                <mat-label>DUPLEX</mat-label>
+                                                <mat-select formControlName="duplex" [disabled]="frmPort.value.autoneg">
+                                                    <mat-option>None</mat-option>
+                                                    <mat-option [value]="auto">Auto</mat-option>
+                                                    <mat-option [value]="full">Full</mat-option>
+                                                    <mat-option [value]="half">Half</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+
+                                    </form>
+                                </div>
+                                <div mat-dialog-actions style="justify-content: space-around;" fxLayout="row">
+                                    <button mat-raised-button (click)="discardDevice()">Close</button>
+                                    <button mat-raised-button color="accent" (click)="saveDevice()" [disabled]="frmPort.invalid">Update</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div fxLayou="row" fxLayoutAlign="start center" style="margin-top: 1em;">
+        <button mat-raised-button color="accent" (click)="back()">Back</button>
+    </div>
+</mat-card>
