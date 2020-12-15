@@ -184,6 +184,7 @@ export class DashboardComponent implements OnInit {
   editingDeviceSettings = null;
   editingPorts = [];
   editingPortNames = [];
+  editingPortsStatus = {}
   displayedPorts = {}
   
   filteredDevicesDatase: MatTableDataSource<DeviceElement> | null;
@@ -211,7 +212,6 @@ export class DashboardComponent implements OnInit {
     this._appService.org_id.subscribe(org_id => this.org_id = org_id)
     this._appService.site_id.subscribe(site_id => this.site_id = site_id)
     this._appService.orgMode.subscribe(orgMode => this.orgMode = orgMode)
- 
 
     // if (this.sites.length == 0) {
     //   this.loadSites()
@@ -300,6 +300,7 @@ export class DashboardComponent implements OnInit {
     else {
       this.editingDevice = device;
       this._getDeviceSettings()
+      this._getPortStatus()
     }
   }
 
@@ -370,6 +371,29 @@ export class DashboardComponent implements OnInit {
     return percentage
   }
 
+  //////////////////////////////////////////////////////////////////////////////
+  /////           Ports Status
+  //////////////////////////////////////////////////////////////////////////////
+
+  _getPortStatus():void {
+    this._http.post<any>('/api/devices/portstatus/', {
+      host: this.host,
+      cookies: this.cookies,
+      headers: this.headers,
+      site_id: this.site_id,
+      device_mac: this.editingDevice.mac
+    }).subscribe({
+      next: data => {
+        this.editingPortsStatus = data.result
+      },
+      error: error => {
+        this.deviceLoading = false
+        var message: string = "Unable to load ports status for the Device " + this.editingDevice.mac + "... "
+        if ("error" in error) { message += error["error"]["message"] }
+        this.openError(message)
+      }
+    })
+  }
   //////////////////////////////////////////////////////////////////////////////
   /////           EDIT Port
   //////////////////////////////////////////////////////////////////////////////

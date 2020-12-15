@@ -1,3 +1,8 @@
+.max90vh {
+    max-height: 90vh;
+    min-height: 800px;
+}
+
 .card-outer {
     background-color: unset;
     max-width: 1900px;
@@ -142,6 +147,18 @@ div.selectable.selected {
 }
 
 
+/* SWITCH */
+
+.switch {
+    background-color: #fafafa;
+    border: solid 1px gray;
+    border-radius: 10px;
+    height: 100px;
+    padding: 10px 20px;
+    min-width: 930px;
+}
+
+
 /* PORTS */
 
 div.ports-text {
@@ -164,19 +181,23 @@ span.port-text {
 }
 
 .normal-port {
-    background-color: gray;
-    border: solid 1px black;
+    background-color: #ddd;
     transition: box-shadow background-color 250ms ease-in-out;
     height: 20px;
     width: 20px;
     border-radius: 4px;
     margin: 2px 3px;
-    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+    border: 1px solid transparent;
+    box-shadow: none;
+}
+
+.port-up {
+    background-color: #6f9d2b;
 }
 
 .selected-port {
-    background-color: #6f9d2b;
-    box-shadow: none;
+    border: solid 1px black;
+    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
     transition: box-shadow background-color 250ms ease-in-out;
 }
 

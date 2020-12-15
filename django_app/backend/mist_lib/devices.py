@@ -280,25 +280,31 @@ class Devices(Common):
 
     def get_device_ports_status(self, body):
         body = self.get_body(body)
-        if "site_id" in body:
-            return self._get_device_ports_status(body)
-        else:
+        if not "site_id" in body:
             return {"status": 500, "data": {"message": "site_id missing"}}
+        if not "device_mac" in body:
+            return {"status": 500, "data": {"message": "device_mac missing"}}
+        else:
+            return self._get_device_ports_status(body)
 
     def _get_device_ports_status(self, body):
         extract = self.extractAuth(body)
-        if "mac" in body:
-            try:
-                url = "https://{0}/api/v1/sites/{1}/stats/switch_ports/search?mac={2}".format(
-                    body["host"], body["site_id"], body["mac"])
-                resp = requests.put(
-                    url, headers=extract["headers"], cookies=extract["cookies"], json=body["device_settings"])
-                return {"status": 200, "data": {"result": resp.json()}}
-            except:
-                return {"status": 500, "data": {"message": "unable to retrieve the device ports status"}}
-        else:
-            return {"status": 500, "data": {"message": "mac missing"}}
+        try:
+            url = "https://{0}/api/v1/sites/{1}/stats/switch_ports/search?mac={2}".format(
+                body["host"], body["site_id"], body["device_mac"])
+            resp = requests.get(
+                url, headers=extract["headers"], cookies=extract["cookies"])
+            data = self._process_device_ports_status(resp.json())
+            return {"status": 200, "data": {"result": data}}
+        except:
+            return {"status": 500, "data": {"message": "unable to retrieve the device ports status"}}
 
+    def _process_device_ports_status(self, data):
+        portstatus = {}
+        if "results" in data:
+            for port in data["results"]:
+                portstatus[port["port_id"]] = port
+        return portstatus
 
 # Site level
 # https://api.mist.com/api/v1/sites/f5fcbee5-fbca-45b3-8bf1-1619ede87879/setting/derived

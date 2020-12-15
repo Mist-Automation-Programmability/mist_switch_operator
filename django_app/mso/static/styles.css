@@ -2937,6 +2937,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
 
 html,
 body {
+    max-height: 100vh;
     min-height: 100vh;
     height: auto;
     margin: 0;

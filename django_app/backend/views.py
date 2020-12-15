@@ -72,6 +72,18 @@ def update_device_settings(request):
         return Http404
 
 
+
+##########
+# Switch Port
+
+@csrf_exempt
+def get_port_status(request):
+    if request.method == "POST":
+        response = Devices().get_device_ports_status(request.body)
+        return JsonResponse(status=response["status"], data=response["data"])
+    else:
+        return Http404    
+
 ##########
 # Sites
 
