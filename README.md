@@ -6,15 +6,12 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-<img src="https://github.com/tmunzer/mist_claim_web_ui/blob/main/._readme/claim.png"  width="75%"  />
+<img src="https://github.com/tmunzer/mist_switch_operator_web_ui/blob/main/._readme/main.png"  width="75%"  />
 
 ## Features
 - list switches
 - single/multi ports configuration changes
 - update switch settings
-
-<img src="https://github.com/tmunzer/mist_claim_web_ui/blob/main/._readme/login.png"  width="45%"  />
-<img src="https://github.com/tmunzer/mist_claim_web_ui/blob/main/._readme/edit.png" width="45%"  />
 
 
 ## Installation
