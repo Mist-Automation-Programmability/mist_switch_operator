@@ -213,11 +213,6 @@ export class DashboardComponent implements OnInit {
     this._appService.site_id.subscribe(site_id => this.site_id = site_id)
     this._appService.orgMode.subscribe(orgMode => this.orgMode = orgMode)
 
-
-    // if (this.sites.length == 0) {
-    //   this.loadSites()
-    // }
-
     this.getDevices();
 
     this._subscription = source.subscribe(s => this.getDevices());
@@ -227,35 +222,6 @@ export class DashboardComponent implements OnInit {
   ngOnDestroy() {
     this._subscription.unsubscribe();
   }
-  //////////////////////////////////////////////////////////////////////////////
-  /////           SITE MGMT
-  //////////////////////////////////////////////////////////////////////////////
-
-  // // loads the org sites
-  // loadSites() {
-  //   this.org_id = this.org_id
-  //   this.topBarLoading = true;
-  //   this.sites = [];
-  //   this._http.post<any>('/api/sites/', { host: this.host, cookies: this.cookies, headers: this.headers, org_id: this.org_id }).subscribe({
-  //     next: data => this.parseSites(data),
-  //     error: error => {
-  //       var message: string = "There was an error... "
-  //       if ("error" in error) {
-  //         message += error["error"]["message"]
-  //       }
-  //       this.topBarLoading = false;
-  //       this.openError(message)
-  //     }
-  //   })
-  // }
-
-  // // parse the org sites from HTTP response
-  // parseSites(data) {
-  //   if (data.sites.length > 0) {
-  //     this.sites = this.sortList(data.sites, "name");
-  //   }
-  //   this.topBarLoading = false;
-  // }
 
 
   //////////////////////////////////////////////////////////////////////////////
@@ -330,59 +296,6 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  saveDevice(): void {
-    console.log(this.editingPorts)
-    this.editingPorts.forEach(element => {
-      element["new_conf"] = {
-        "mode": this.frmPort.get("mode").value,
-        "all_networks": this.frmPort.get("all_networks").value,
-        "networks": this.frmPort.get("networks").value,
-        "port_network": this.frmPort.get("port_network").value,
-        "port_auth": this.frmPort.get("port_auth").value,
-        "enable_mac_auth": this.frmPort.get("enable_mac_auth").value,
-        "guest_network": this.frmPort.get("guest_network").value,
-        "mobypass_auth_when_server_downde": this.frmPort.get("bypass_auth_when_server_down").value,
-        "autoneg": this.frmPort.get("autoneg").value,
-        "mac_limit": this.frmPort.get("autoneg").value,
-        "stp_edge": this.frmPort.get("stp_edge").value,
-        "mtu": this.frmPort.get("mtu").value,
-        "disabled": this.frmPort.get("enabled").value == false,
-        "poe_disabled": this.frmPort.get("poe").value == false,
-        "description": this.frmPort.get("description").value,
-        "voip_network": this.frmPort.get("voip_network").value,
-        "storm_control": this.frmPort.get("storm_control").value,
-        "duplex": this.frmPort.get("duplex").value,
-        "speed": this.frmPort.get("speed").value
-      }
-    })
-    console.log(this.editingPorts)
-    // if (this.frmPort.valid && !this.topBarLoading) {
-    //   this.topBarLoading = true
-    //   var body = {
-    //     host: this.host,
-    //     cookies: this.cookies,
-    //     headers: this.headers,
-    //     site_id: this.site_id,
-    //     org_id: this.org_id,
-    //     device: this.frmPort.getRawValue(),
-    //     device_id: this.editingDevice.device_id
-    //   }
-    //   this._http.post<any>('/api/devices/update/', body).subscribe({
-    //     next: data => {
-    //       this.topBarLoading = false
-    //       this.updateFrmDeviceValues(data.result)
-    //       this.getDevices()
-    //       this.openSnackBar("Device " + this.editingDevice.mac + " successfully provisioned", "Done")
-    //     },
-    //     error: error => {
-    //       this.topBarLoading = false
-    //       var message: string = "Unable to save changes to Device " + this.editingDevice.mac + "... "
-    //       if ("error" in error) { message += error["error"]["message"] }
-    //       this.openError(message)
-    //     }
-    //   })
-    // }
-  }
   _discardDevice(): void {
     this.editingDevice = null;
     this.editingDeviceSettings = null;
@@ -391,17 +304,17 @@ export class DashboardComponent implements OnInit {
     this.displayedPorts = {};
     this._discardPorts()
   }
-
+  
   powerDraw(member) {
     var percentage = (member.poe.power_draw / member.poe.max_power) * 100
     console.log(percentage)
     return percentage
   }
-
+  
   //////////////////////////////////////////////////////////////////////////////
   /////           Ports Status
   //////////////////////////////////////////////////////////////////////////////
-
+  
   _getPortStatus(): void {
     this._http.post<any>('/api/devices/portstatus/', {
       host: this.host,
@@ -428,7 +341,7 @@ export class DashboardComponent implements OnInit {
     let port = this.editingDeviceSettings.ports[portName]
     this.selectPort(port)
   }
-
+  
   selectPort(port): void {
     if (this.editingPorts.includes(port)) {
       this._deletePort(port);
@@ -445,7 +358,7 @@ export class DashboardComponent implements OnInit {
       }
     }
   }
-
+  
   // ADD or REMOVE ports from the editing list
   _addPort(port): void {
     this.editingPorts.push(port);
@@ -460,7 +373,58 @@ export class DashboardComponent implements OnInit {
       this._discardPorts()
     }
   }
-
+  
+  savePorts(): void {
+    this.editingPorts.forEach(element => {
+      element["new_conf"] = {
+        "mode": this.frmPort.get("mode").value,
+        "all_networks": this.frmPort.get("all_networks").value,
+        "networks": this.frmPort.get("networks").value,
+        "port_network": this.frmPort.get("port_network").value,
+        "port_auth": this.frmPort.get("port_auth").value,
+        "enable_mac_auth": this.frmPort.get("enable_mac_auth").value,
+        "guest_network": this.frmPort.get("guest_network").value,
+        "mobypass_auth_when_server_downde": this.frmPort.get("bypass_auth_when_server_down").value,
+        "autoneg": this.frmPort.get("autoneg").value,
+        "mac_limit": this.frmPort.get("autoneg").value,
+        "stp_edge": this.frmPort.get("stp_edge").value,
+        "mtu": this.frmPort.get("mtu").value,
+        "disabled": this.frmPort.get("enabled").value == false,
+        "poe_disabled": this.frmPort.get("poe").value == false,
+        "description": this.frmPort.get("description").value,
+        "voip_network": this.frmPort.get("voip_network").value,
+        "storm_control": this.frmPort.get("storm_control").value,
+        "duplex": this.frmPort.get("duplex").value,
+        "speed": this.frmPort.get("speed").value
+      }
+    })
+    if (this.frmPort.valid) {
+      this.topBarLoading = true
+      var body = {
+        host: this.host,
+        cookies: this.cookies,
+        headers: this.headers,
+        site_id: this.site_id,
+        org_id: this.org_id,
+        port_config: this.editingPorts,
+        device_id: this.editingDevice.id
+      }
+      this._http.post<any>('/api/devices/update/', body).subscribe({
+        next: data => {
+          this.topBarLoading = false
+          this.updateFrmDeviceValues(data.result)
+          this.getDevices()
+          this.openSnackBar("Device " + this.editingDevice.mac + " successfully updated", "Done")
+        },
+        error: error => {
+          this.topBarLoading = false
+          var message: string = "Unable to save changes on Device " + this.editingDevice.mac + "... "
+          if ("error" in error) { message += error["error"]["message"] }
+          this.openError(message)
+        }
+      })
+    }
+  }
   // Reset the ports selection and form
   _discardPorts(): void {
     this.editingPorts = []

@@ -3301,7 +3301,7 @@
 
             var ctx_r73 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2);
 
-            return ctx_r73.saveDevice();
+            return ctx_r73.savePorts();
           });
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](4, "Update");
@@ -3521,10 +3521,7 @@
 
             this._appService.orgMode.subscribe(function (orgMode) {
               return _this6.orgMode = orgMode;
-            }); // if (this.sites.length == 0) {
-            //   this.loadSites()
-            // }
-
+            });
 
             this.getDevices();
             this._subscription = source.subscribe(function (s) {
@@ -3536,33 +3533,6 @@
           value: function ngOnDestroy() {
             this._subscription.unsubscribe();
           } //////////////////////////////////////////////////////////////////////////////
-          /////           SITE MGMT
-          //////////////////////////////////////////////////////////////////////////////
-          // // loads the org sites
-          // loadSites() {
-          //   this.org_id = this.org_id
-          //   this.topBarLoading = true;
-          //   this.sites = [];
-          //   this._http.post<any>('/api/sites/', { host: this.host, cookies: this.cookies, headers: this.headers, org_id: this.org_id }).subscribe({
-          //     next: data => this.parseSites(data),
-          //     error: error => {
-          //       var message: string = "There was an error... "
-          //       if ("error" in error) {
-          //         message += error["error"]["message"]
-          //       }
-          //       this.topBarLoading = false;
-          //       this.openError(message)
-          //     }
-          //   })
-          // }
-          // // parse the org sites from HTTP response
-          // parseSites(data) {
-          //   if (data.sites.length > 0) {
-          //     this.sites = this.sortList(data.sites, "name");
-          //   }
-          //   this.topBarLoading = false;
-          // }
-          //////////////////////////////////////////////////////////////////////////////
           /////           LOAD DEVICE LIST
           //////////////////////////////////////////////////////////////////////////////
 
@@ -3657,62 +3627,6 @@
             });
           }
         }, {
-          key: "saveDevice",
-          value: function saveDevice() {
-            var _this9 = this;
-
-            console.log(this.editingPorts);
-            this.editingPorts.forEach(function (element) {
-              element["new_conf"] = {
-                "mode": _this9.frmPort.get("mode").value,
-                "all_networks": _this9.frmPort.get("all_networks").value,
-                "networks": _this9.frmPort.get("networks").value,
-                "port_network": _this9.frmPort.get("port_network").value,
-                "port_auth": _this9.frmPort.get("port_auth").value,
-                "enable_mac_auth": _this9.frmPort.get("enable_mac_auth").value,
-                "guest_network": _this9.frmPort.get("guest_network").value,
-                "mobypass_auth_when_server_downde": _this9.frmPort.get("bypass_auth_when_server_down").value,
-                "autoneg": _this9.frmPort.get("autoneg").value,
-                "mac_limit": _this9.frmPort.get("autoneg").value,
-                "stp_edge": _this9.frmPort.get("stp_edge").value,
-                "mtu": _this9.frmPort.get("mtu").value,
-                "disabled": _this9.frmPort.get("enabled").value == false,
-                "poe_disabled": _this9.frmPort.get("poe").value == false,
-                "description": _this9.frmPort.get("description").value,
-                "voip_network": _this9.frmPort.get("voip_network").value,
-                "storm_control": _this9.frmPort.get("storm_control").value,
-                "duplex": _this9.frmPort.get("duplex").value,
-                "speed": _this9.frmPort.get("speed").value
-              };
-            });
-            console.log(this.editingPorts); // if (this.frmPort.valid && !this.topBarLoading) {
-            //   this.topBarLoading = true
-            //   var body = {
-            //     host: this.host,
-            //     cookies: this.cookies,
-            //     headers: this.headers,
-            //     site_id: this.site_id,
-            //     org_id: this.org_id,
-            //     device: this.frmPort.getRawValue(),
-            //     device_id: this.editingDevice.device_id
-            //   }
-            //   this._http.post<any>('/api/devices/update/', body).subscribe({
-            //     next: data => {
-            //       this.topBarLoading = false
-            //       this.updateFrmDeviceValues(data.result)
-            //       this.getDevices()
-            //       this.openSnackBar("Device " + this.editingDevice.mac + " successfully provisioned", "Done")
-            //     },
-            //     error: error => {
-            //       this.topBarLoading = false
-            //       var message: string = "Unable to save changes to Device " + this.editingDevice.mac + "... "
-            //       if ("error" in error) { message += error["error"]["message"] }
-            //       this.openError(message)
-            //     }
-            //   })
-            // }
-          }
-        }, {
           key: "_discardDevice",
           value: function _discardDevice() {
             this.editingDevice = null;
@@ -3736,7 +3650,7 @@
         }, {
           key: "_getPortStatus",
           value: function _getPortStatus() {
-            var _this10 = this;
+            var _this9 = this;
 
             this._http.post('/api/devices/portstatus/', {
               host: this.host,
@@ -3746,17 +3660,17 @@
               device_mac: this.editingDevice.mac
             }).subscribe({
               next: function next(data) {
-                _this10.editingPortsStatus = data.result;
+                _this9.editingPortsStatus = data.result;
               },
               error: function error(_error5) {
-                _this10.deviceLoading = false;
-                var message = "Unable to load ports status for the Device " + _this10.editingDevice.mac + "... ";
+                _this9.deviceLoading = false;
+                var message = "Unable to load ports status for the Device " + _this9.editingDevice.mac + "... ";
 
                 if ("error" in _error5) {
                   message += _error5["error"]["message"];
                 }
 
-                _this10.openError(message);
+                _this9.openError(message);
               }
             });
           } //////////////////////////////////////////////////////////////////////////////
@@ -3805,6 +3719,70 @@
 
             if (this.editingPorts.length == 0) {
               this._discardPorts();
+            }
+          }
+        }, {
+          key: "savePorts",
+          value: function savePorts() {
+            var _this10 = this;
+
+            this.editingPorts.forEach(function (element) {
+              element["new_conf"] = {
+                "mode": _this10.frmPort.get("mode").value,
+                "all_networks": _this10.frmPort.get("all_networks").value,
+                "networks": _this10.frmPort.get("networks").value,
+                "port_network": _this10.frmPort.get("port_network").value,
+                "port_auth": _this10.frmPort.get("port_auth").value,
+                "enable_mac_auth": _this10.frmPort.get("enable_mac_auth").value,
+                "guest_network": _this10.frmPort.get("guest_network").value,
+                "mobypass_auth_when_server_downde": _this10.frmPort.get("bypass_auth_when_server_down").value,
+                "autoneg": _this10.frmPort.get("autoneg").value,
+                "mac_limit": _this10.frmPort.get("autoneg").value,
+                "stp_edge": _this10.frmPort.get("stp_edge").value,
+                "mtu": _this10.frmPort.get("mtu").value,
+                "disabled": _this10.frmPort.get("enabled").value == false,
+                "poe_disabled": _this10.frmPort.get("poe").value == false,
+                "description": _this10.frmPort.get("description").value,
+                "voip_network": _this10.frmPort.get("voip_network").value,
+                "storm_control": _this10.frmPort.get("storm_control").value,
+                "duplex": _this10.frmPort.get("duplex").value,
+                "speed": _this10.frmPort.get("speed").value
+              };
+            });
+
+            if (this.frmPort.valid) {
+              this.topBarLoading = true;
+              var body = {
+                host: this.host,
+                cookies: this.cookies,
+                headers: this.headers,
+                site_id: this.site_id,
+                org_id: this.org_id,
+                port_config: this.editingPorts,
+                device_id: this.editingDevice.id
+              };
+
+              this._http.post('/api/devices/update/', body).subscribe({
+                next: function next(data) {
+                  _this10.topBarLoading = false;
+
+                  _this10.updateFrmDeviceValues(data.result);
+
+                  _this10.getDevices();
+
+                  _this10.openSnackBar("Device " + _this10.editingDevice.mac + " successfully updated", "Done");
+                },
+                error: function error(_error6) {
+                  _this10.topBarLoading = false;
+                  var message = "Unable to save changes on Device " + _this10.editingDevice.mac + "... ";
+
+                  if ("error" in _error6) {
+                    message += _error6["error"]["message"];
+                  }
+
+                  _this10.openError(message);
+                }
+              });
             }
           } // Reset the ports selection and form
 
@@ -5737,7 +5715,7 @@
               next: function next(data) {
                 return _this11._appService.googleApiKeySet(data.gap);
               },
-              error: function error(_error6) {
+              error: function error(_error7) {
                 return console.error("Unable to load the Google API Key... Maps won't be available...");
               }
             });
@@ -5841,8 +5819,8 @@
                 next: function next(data) {
                   return _this12.parse_response(data);
                 },
-                error: function error(_error7) {
-                  return _this12.error_message("credentials", _error7.error.message);
+                error: function error(_error8) {
+                  return _this12.error_message("credentials", _error8.error.message);
                 }
               });
             }
@@ -5864,8 +5842,8 @@
                 next: function next(data) {
                   return _this13.parse_response(data);
                 },
-                error: function error(_error8) {
-                  return _this13.error_message("credentials", _error8.error.message);
+                error: function error(_error9) {
+                  return _this13.error_message("credentials", _error9.error.message);
                 }
               });
             }
@@ -5887,8 +5865,8 @@
                 next: function next(data) {
                   return _this14.parse_response(data);
                 },
-                error: function error(_error9) {
-                  return _this14.error_message("credentials", _error9.error.message);
+                error: function error(_error10) {
+                  return _this14.error_message("credentials", _error10.error.message);
                 }
               });
             }

@@ -285,7 +285,7 @@
                     </div>
                     <div mat-dialog-actions style="justify-content: space-around;" fxLayout="row" *ngIf="editingPorts.length >= 1">
                         <button mat-raised-button (click)="discardDevice()">Close</button>
-                        <button mat-raised-button color="accent" (click)="saveDevice()" [disabled]="frmPort.invalid">Update</button>
+                        <button mat-raised-button color="accent" (click)="savePorts()" [disabled]="frmPort.invalid">Update</button>
                     </div>
                 </div>
             </div>

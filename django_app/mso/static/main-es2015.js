@@ -1596,7 +1596,7 @@ function DashboardComponent_div_17_div_15_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](2, "Close");
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](3, "button", 98);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function DashboardComponent_div_17_div_15_Template_button_click_3_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r72); const ctx_r73 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2); return ctx_r73.saveDevice(); });
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function DashboardComponent_div_17_div_15_Template_button_click_3_listener() { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r72); const ctx_r73 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2); return ctx_r73.savePorts(); });
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](4, "Update");
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
@@ -1731,42 +1731,12 @@ class DashboardComponent {
         this._appService.org_id.subscribe(org_id => this.org_id = org_id);
         this._appService.site_id.subscribe(site_id => this.site_id = site_id);
         this._appService.orgMode.subscribe(orgMode => this.orgMode = orgMode);
-        // if (this.sites.length == 0) {
-        //   this.loadSites()
-        // }
         this.getDevices();
         this._subscription = source.subscribe(s => this.getDevices());
     }
     ngOnDestroy() {
         this._subscription.unsubscribe();
     }
-    //////////////////////////////////////////////////////////////////////////////
-    /////           SITE MGMT
-    //////////////////////////////////////////////////////////////////////////////
-    // // loads the org sites
-    // loadSites() {
-    //   this.org_id = this.org_id
-    //   this.topBarLoading = true;
-    //   this.sites = [];
-    //   this._http.post<any>('/api/sites/', { host: this.host, cookies: this.cookies, headers: this.headers, org_id: this.org_id }).subscribe({
-    //     next: data => this.parseSites(data),
-    //     error: error => {
-    //       var message: string = "There was an error... "
-    //       if ("error" in error) {
-    //         message += error["error"]["message"]
-    //       }
-    //       this.topBarLoading = false;
-    //       this.openError(message)
-    //     }
-    //   })
-    // }
-    // // parse the org sites from HTTP response
-    // parseSites(data) {
-    //   if (data.sites.length > 0) {
-    //     this.sites = this.sortList(data.sites, "name");
-    //   }
-    //   this.topBarLoading = false;
-    // }
     //////////////////////////////////////////////////////////////////////////////
     /////           LOAD DEVICE LIST
     //////////////////////////////////////////////////////////////////////////////
@@ -1834,59 +1804,6 @@ class DashboardComponent {
                 this.openError(message);
             }
         });
-    }
-    saveDevice() {
-        console.log(this.editingPorts);
-        this.editingPorts.forEach(element => {
-            element["new_conf"] = {
-                "mode": this.frmPort.get("mode").value,
-                "all_networks": this.frmPort.get("all_networks").value,
-                "networks": this.frmPort.get("networks").value,
-                "port_network": this.frmPort.get("port_network").value,
-                "port_auth": this.frmPort.get("port_auth").value,
-                "enable_mac_auth": this.frmPort.get("enable_mac_auth").value,
-                "guest_network": this.frmPort.get("guest_network").value,
-                "mobypass_auth_when_server_downde": this.frmPort.get("bypass_auth_when_server_down").value,
-                "autoneg": this.frmPort.get("autoneg").value,
-                "mac_limit": this.frmPort.get("autoneg").value,
-                "stp_edge": this.frmPort.get("stp_edge").value,
-                "mtu": this.frmPort.get("mtu").value,
-                "disabled": this.frmPort.get("enabled").value == false,
-                "poe_disabled": this.frmPort.get("poe").value == false,
-                "description": this.frmPort.get("description").value,
-                "voip_network": this.frmPort.get("voip_network").value,
-                "storm_control": this.frmPort.get("storm_control").value,
-                "duplex": this.frmPort.get("duplex").value,
-                "speed": this.frmPort.get("speed").value
-            };
-        });
-        console.log(this.editingPorts);
-        // if (this.frmPort.valid && !this.topBarLoading) {
-        //   this.topBarLoading = true
-        //   var body = {
-        //     host: this.host,
-        //     cookies: this.cookies,
-        //     headers: this.headers,
-        //     site_id: this.site_id,
-        //     org_id: this.org_id,
-        //     device: this.frmPort.getRawValue(),
-        //     device_id: this.editingDevice.device_id
-        //   }
-        //   this._http.post<any>('/api/devices/update/', body).subscribe({
-        //     next: data => {
-        //       this.topBarLoading = false
-        //       this.updateFrmDeviceValues(data.result)
-        //       this.getDevices()
-        //       this.openSnackBar("Device " + this.editingDevice.mac + " successfully provisioned", "Done")
-        //     },
-        //     error: error => {
-        //       this.topBarLoading = false
-        //       var message: string = "Unable to save changes to Device " + this.editingDevice.mac + "... "
-        //       if ("error" in error) { message += error["error"]["message"] }
-        //       this.openError(message)
-        //     }
-        //   })
-        // }
     }
     _discardDevice() {
         this.editingDevice = null;
@@ -1961,6 +1878,59 @@ class DashboardComponent {
         this.editingPortNames.splice(indexName, 1);
         if (this.editingPorts.length == 0) {
             this._discardPorts();
+        }
+    }
+    savePorts() {
+        this.editingPorts.forEach(element => {
+            element["new_conf"] = {
+                "mode": this.frmPort.get("mode").value,
+                "all_networks": this.frmPort.get("all_networks").value,
+                "networks": this.frmPort.get("networks").value,
+                "port_network": this.frmPort.get("port_network").value,
+                "port_auth": this.frmPort.get("port_auth").value,
+                "enable_mac_auth": this.frmPort.get("enable_mac_auth").value,
+                "guest_network": this.frmPort.get("guest_network").value,
+                "mobypass_auth_when_server_downde": this.frmPort.get("bypass_auth_when_server_down").value,
+                "autoneg": this.frmPort.get("autoneg").value,
+                "mac_limit": this.frmPort.get("autoneg").value,
+                "stp_edge": this.frmPort.get("stp_edge").value,
+                "mtu": this.frmPort.get("mtu").value,
+                "disabled": this.frmPort.get("enabled").value == false,
+                "poe_disabled": this.frmPort.get("poe").value == false,
+                "description": this.frmPort.get("description").value,
+                "voip_network": this.frmPort.get("voip_network").value,
+                "storm_control": this.frmPort.get("storm_control").value,
+                "duplex": this.frmPort.get("duplex").value,
+                "speed": this.frmPort.get("speed").value
+            };
+        });
+        if (this.frmPort.valid) {
+            this.topBarLoading = true;
+            var body = {
+                host: this.host,
+                cookies: this.cookies,
+                headers: this.headers,
+                site_id: this.site_id,
+                org_id: this.org_id,
+                port_config: this.editingPorts,
+                device_id: this.editingDevice.id
+            };
+            this._http.post('/api/devices/update/', body).subscribe({
+                next: data => {
+                    this.topBarLoading = false;
+                    this.updateFrmDeviceValues(data.result);
+                    this.getDevices();
+                    this.openSnackBar("Device " + this.editingDevice.mac + " successfully updated", "Done");
+                },
+                error: error => {
+                    this.topBarLoading = false;
+                    var message = "Unable to save changes on Device " + this.editingDevice.mac + "... ";
+                    if ("error" in error) {
+                        message += error["error"]["message"];
+                    }
+                    this.openError(message);
+                }
+            });
         }
     }
     // Reset the ports selection and form
