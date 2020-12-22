@@ -36,7 +36,6 @@ class Devices(Common):
                 total = resp.headers["X-Page-Total"]
                 page += 1
             return self._get_devices_vc(extract, site_id, results)
-
         except:
             return {"status": 500, "data": {"message": "Unable to retrieve the inventory"}}
 

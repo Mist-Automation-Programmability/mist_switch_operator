@@ -152,10 +152,11 @@ div.selectable.selected {
 .switch {
     background-color: #fafafa;
     border: solid 1px gray;
-    border-radius: 10px;
+    border-radius: 5px;
     height: 100px;
     padding: 10px 20px;
     min-width: 930px;
+    max-width: 1000px;
 }
 
 
@@ -219,4 +220,26 @@ mat-checkbox.expand-checkbox {
 ::ng-deep mat-checkbox.expand-checkbox .mat-checkbox-label {
     width: 100%;
     margin: 0.5em 0 0.5em 0;
+}
+
+
+/* MEMBER DETAILS */
+
+.member-details {}
+
+.member-details th {
+    text-align: start;
+    padding-right: 1em;
+    font-weight: normal;
+    vertical-align: top;
+}
+
+.member-details td {
+    text-align: start;
+    font-weight: lighter;
+    color: gray;
+}
+
+.member-details td:hover {
+    background-color: transparent;
 }

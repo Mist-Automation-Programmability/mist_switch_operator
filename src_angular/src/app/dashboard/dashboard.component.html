@@ -1,20 +1,22 @@
 <div style="margin: 0 1em">
-    <mat-sidenav fxLayout="column" fxLayoutAlign="space-between stretch" style="width:20em; min-width: 20em; background-color: white; z-index: 10;" class="mat-elevation-z8 max90vh">
+    <mat-sidenav fxLayout="column" fxLayoutAlign="space-between stretch" style="width:20em; min-width: 20em;" class="max90vh">
         <div>
-            <mat-progress-bar mode="indeterminate" color="accent" *ngIf="topBarLoading == true"></mat-progress-bar>
-            <div style="width: 100%; height: 4px; background-color: rgb(111 157 43);" *ngIf="topBarLoading == false">
-            </div>
-            <div fxLayout="column" class="psk-table-container">
-                <table mat-table [dataSource]="filteredDevicesDatase">
+            <div fxLayout="column" class="psk-table-container" style="padding-right: 2em;">
+                <table mat-table [dataSource]="filteredDevicesDatase" style="background: none;">
                     <ng-container matColumnDef="device">
-                        <th mat-header-cell *matHeaderCellDef fxLayout="row" fxLayoutAlign="space-between stretch" style="padding-right: 0;">
-                            <mat-form-field>
-                                <mat-label>Filter</mat-label>
-                                <input matInput (keyup)="applyFilter($event)" placeholder="Ex. switch name" #input>
-                            </mat-form-field>
-                            <button mat-button (click)="getDevices()" [disabled]="topBarLoading" style="height: 100%; margin: auto ">
-                                        <mat-icon matTooltip="Refresh list" aria-label="Refresh list">refresh</mat-icon>                                        
-                                    </button>
+                        <th mat-header-cell *matHeaderCellDef fxLayout="column" fxLayoutAlign="space-between stretch" style="padding-right: 0; padding-left: 0; ">
+                            <div fxLayout="row" style="margin-left: 24px;">
+                                <mat-form-field>
+                                    <mat-label>Filter</mat-label>
+                                    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. switch name" #input>
+                                </mat-form-field>
+                                <button mat-button (click)="getDevices()" [disabled]="topBarLoading" style="height: 100%; margin: auto ">
+                                    <mat-icon matTooltip="Refresh list" aria-label="Refresh list">refresh</mat-icon>                                        
+                                </button>
+                            </div>
+                            <mat-progress-bar mode="indeterminate" color="accent" *ngIf="topBarLoading == true"></mat-progress-bar>
+                            <div style="width: 100%; height: 4px; background-color: rgb(111 157 43);" *ngIf="topBarLoading == false">
+                            </div>
                         </th>
                         <td mat-cell *matCellDef="let element" [ngClass]="{selected: editingDevice && element.mac === editingDevice.mac}">
                             <a role="button" (click)="editDevice(element)" class="device" fxLayout="row" fxLayoutAlign="start stretch" style="cursor: pointer;">
@@ -42,7 +44,7 @@
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
-                <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"></mat-paginator>
+                <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" style="background:  none;"></mat-paginator>
             </div>
         </div>
         <div fxLayou="row" fxLayoutAlign="start center" style="margin: 1em;">
@@ -80,9 +82,9 @@
             </div>
 
 
-            <div fxFlex fxLayout="column" style="margin:0 3em" class="no-cursor">
+            <div fxFlex fxLayout="column" style="margin:0 1em" class="no-cursor">
                 <div mat-dialog-content fxLayout="column">
-                    <div fxLayout="row wrap" fxLayoutAlign="center center">
+                    <!-- <div fxLayout="row wrap" fxLayoutAlign="center center">
                         <div fxLayout="column" fxLayoutAlign="center center" style="margin-bottom: 2em;" class="no-cursor">
                             <div *ngIf="editingDevice.status === 'connected'" fxLayout="row" fxLayoutAlign="center center">
                                 <mat-icon aria-hidden="false" style="color: #6f9d2b; margin-right:1em;">
@@ -96,9 +98,9 @@
                                 <div>Device is NOT CONNECTED to the Cloud</div>
                             </div>
                         </div>
-                    </div>
-                    <div *ngFor='let member of editingDeviceSettings.members; let index = index'>
-                        <div class="switch" fxLayout="column" fxLayoutAlign="start stretch">
+                    </div> -->
+                    <div *ngFor='let member of editingDeviceSettings.members; let index = index' style="margin-bottom: 0em;">
+                        <div class="switch" fxLayout="column" fxLayoutAlign="start start">
                             <div style="font-weight: lighter;">
                                 {{editingDevice.model}}
                             </div>
@@ -133,40 +135,85 @@
 
 
 
-                    <div *ngIf=" editingPorts.length == 0">
-                        <div *ngFor="let member of editingDeviceSettings.members; let index = index">
-                            <mat-divider inset="true" style="margin-bottom: 1em;"></mat-divider>
-                            <div fxLayout="row wrap" fxLayoutAlign="space-between stretch">
-                                <mat-form-field appearance="outline">
-                                    <mat-label>MODEL</mat-label>
-                                    <input matInput disabled [ngModel]="member.model" />
-                                </mat-form-field>
-                                <mat-form-field appearance="outline">
-                                    <mat-label>SERIAL</mat-label>
-                                    <input matInput disabled [ngModel]="member.serial" />
-                                </mat-form-field>
-                                <mat-form-field appearance="outline">
-                                    <mat-label>MAC ADDRESS</mat-label>
-                                    <input matInput disabled [ngModel]="member.mac" />
-                                </mat-form-field>
-                                <mat-form-field appearance="outline">
-                                    <mat-label>Member</mat-label>
-                                    <input matInput disabled [ngModel]="index" />
-                                </mat-form-field>
-                                <mat-form-field appearance="outline">
-                                    <mat-label>VC Role</mat-label>
-                                    <input matInput disabled [ngModel]="member.vc_role" />
-                                </mat-form-field>
-                            </div>
-                            <span>PoE</span>
-                            <div fxLayout="row" fxLayoutAlign="space-between center">
-                                <mat-form-field appearance="outline">
-                                    <mat-label>Power Draw</mat-label>
-                                    <input matInput disabled [ngModel]="member.poe.power_draw" />
-                                </mat-form-field>
-                                <!-- <mat-progress-bar mode="determinate" [value]="powerDraw(member)"></mat-progress-bar> -->
-                            </div>
-                        </div>
+                    <div *ngIf="editingPorts.length == 0" style="margin: 1em;" fxLayout="row">
+
+                        <mat-card *ngFor="let member of editingDeviceSettings.members; let index = index" fxLayoutGap style="margin:1em">
+                            <mat-card-title>
+                            </mat-card-title>
+                            <mat-card-content>
+
+                                <table class="member-details">
+                                    <tr>
+                                        <th>MEMBER #</th>
+                                        <td>{{index}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>VC ROLE</th>
+                                        <td>{{member.vc_role}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>MODEL</th>
+                                        <td>{{member.model}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>SERIAL</th>
+                                        <td>{{member.serial}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>MAC ADDRESS</th>
+                                        <td>{{member.mac}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>POE</th>
+                                        <td>{{member.poe.power_draw}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>POE Budget</th>
+                                        <td>{{member.poe.power_draw}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>TEMP</th>
+                                        <td>
+                                            <div *ngFor="let temp of member.temperatures" fxLayout="row" fxLayoutAlign="start center">
+                                                <div *ngIf="temp.status === 'ok'">
+                                                    <mat-icon aria-hidden="false" style="color: #6f9d2b; margin-right:1em;" inline="true">
+                                                        check_circle</mat-icon>
+                                                </div>
+                                                <div *ngIf="!temp.status === 'ok'">
+                                                    <mat-icon aria-hidden="false" style="color: red; margin-right:1em" inline="true">
+                                                        cancel
+                                                    </mat-icon>
+                                                </div>
+                                                <div>
+                                                    {{temp.name}}: {{temp.celsius}}°C
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>FAN</th>
+                                        <td>
+                                            <div *ngFor="let fan of member.fans" fxLayout="row" fxLayoutAlign="start center">
+                                                <div *ngIf="fan.status === 'ok'">
+                                                    <mat-icon aria-hidden="false" style="color: #6f9d2b; margin-right: 1em;" inline="true">
+                                                        check_circle</mat-icon>
+                                                </div>
+                                                <div *ngIf="!fan.status === 'ok'">
+                                                    <mat-icon aria-hidden="false" style="color: red; margin-right: 1em" inline="true">
+                                                        cancel
+                                                    </mat-icon>
+                                                </div>
+                                                <div>
+                                                    {{fan.name}}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </mat-card-content>
+
+                        </mat-card>
+
                     </div>
 
                     <div *ngIf="editingPorts.length >= 1">
@@ -215,23 +262,21 @@
                                 <mat-form-field appearance="outline">
                                     <mat-label>SPEED</mat-label>
                                     <mat-select formControlName="speed" [disabled]="frmPort.value.autoneg">
-                                        <mat-option>None</mat-option>
-                                        <mat-option [value]="auto">Auto</mat-option>
-                                        <mat-option [value]="10">10M</mat-option>
-                                        <mat-option [value]="100">100M</mat-option>
-                                        <mat-option [value]="1000">1G</mat-option>
-                                        <mat-option [value]="2500">2.5G</mat-option>
-                                        <mat-option [value]="5000">5G</mat-option>
+                                        <mat-option value="auto">Auto</mat-option>
+                                        <mat-option value="10">10M</mat-option>
+                                        <mat-option value="100">100M</mat-option>
+                                        <mat-option value="1000">1G</mat-option>
+                                        <mat-option value="2500">2.5G</mat-option>
+                                        <mat-option value="5000">5G</mat-option>
                                     </mat-select>
                                 </mat-form-field>
 
                                 <mat-form-field appearance="outline">
                                     <mat-label>DUPLEX</mat-label>
                                     <mat-select formControlName="duplex" [disabled]="frmPort.value.autoneg">
-                                        <mat-option>None</mat-option>
-                                        <mat-option [value]="auto">Auto</mat-option>
-                                        <mat-option [value]="full">Full</mat-option>
-                                        <mat-option [value]="half">Half</mat-option>
+                                        <mat-option value="auto">Auto</mat-option>
+                                        <mat-option value="full">Full</mat-option>
+                                        <mat-option value="half">Half</mat-option>
                                     </mat-select>
                                 </mat-form-field>
                             </div>

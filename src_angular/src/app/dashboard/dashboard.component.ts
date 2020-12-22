@@ -129,8 +129,8 @@ export class DashboardComponent implements OnInit {
     enable_mac_auth: "",
     guest_network: "",
     bypass_auth_when_server_down: false,
-    speed: "auto",
-    duplex: "auto",
+    speed: ["auto"],
+    duplex: ["auto"],
     autoneg: true,
     mac_limit: 0,
     stp_edge: true,
@@ -139,7 +139,7 @@ export class DashboardComponent implements OnInit {
     poe: true,
     description: "",
     voip_network: "",
-    storm_control: {} 
+    storm_control: {}
   })
 
   defaultConfig = {
@@ -176,7 +176,7 @@ export class DashboardComponent implements OnInit {
   orgMode: boolean = false;
   site_id: string = "__any__";
   me: string = "";
-  
+
   topBarLoading = false;
   deviceLoading = false;
 
@@ -186,25 +186,25 @@ export class DashboardComponent implements OnInit {
   editingPortNames = [];
   editingPortsStatus = {}
   displayedPorts = {}
-  
+
   filteredDevicesDatase: MatTableDataSource<DeviceElement> | null;
   devices: DeviceElement[] = []
-  
+
   resultsLength = 0;
   displayedColumns: string[] = ["device"];
   private _subscription: Subscription
-  
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  
+
   constructor(private _router: Router, private _http: HttpClient, private _appService: ConnectorService, public _dialog: MatDialog, private _formBuilder: FormBuilder, private _snackBar: MatSnackBar) { }
-  
+
   //////////////////////////////////////////////////////////////////////////////
   /////           INIT
   //////////////////////////////////////////////////////////////////////////////
-  
+
   ngOnInit() {
     const source = interval(60000);
-    
+
     this._appService.headers.subscribe(headers => this.headers = headers)
     this._appService.cookies.subscribe(cookies => this.cookies = cookies)
     this._appService.host.subscribe(host => this.host = host)
@@ -212,6 +212,7 @@ export class DashboardComponent implements OnInit {
     this._appService.org_id.subscribe(org_id => this.org_id = org_id)
     this._appService.site_id.subscribe(site_id => this.site_id = site_id)
     this._appService.orgMode.subscribe(orgMode => this.orgMode = orgMode)
+
 
     // if (this.sites.length == 0) {
     //   this.loadSites()
@@ -298,6 +299,7 @@ export class DashboardComponent implements OnInit {
       this._discardDevice();
     }
     else {
+      this._discardDevice();
       this.editingDevice = device;
       this._getDeviceSettings()
       this._getPortStatus()
@@ -329,32 +331,57 @@ export class DashboardComponent implements OnInit {
 
 
   saveDevice(): void {
-    if (this.frmPort.valid && !this.topBarLoading) {
-      this.topBarLoading = true
-      var body = {
-        host: this.host,
-        cookies: this.cookies,
-        headers: this.headers,
-        site_id: this.site_id,
-        org_id: this.org_id,
-        device: this.frmPort.getRawValue(),
-        device_id: this.editingDevice.device_id
+    console.log(this.editingPorts)
+    this.editingPorts.forEach(element => {
+      element["new_conf"] = {
+        "mode": this.frmPort.get("mode").value,
+        "all_networks": this.frmPort.get("all_networks").value,
+        "networks": this.frmPort.get("networks").value,
+        "port_network": this.frmPort.get("port_network").value,
+        "port_auth": this.frmPort.get("port_auth").value,
+        "enable_mac_auth": this.frmPort.get("enable_mac_auth").value,
+        "guest_network": this.frmPort.get("guest_network").value,
+        "mobypass_auth_when_server_downde": this.frmPort.get("bypass_auth_when_server_down").value,
+        "autoneg": this.frmPort.get("autoneg").value,
+        "mac_limit": this.frmPort.get("autoneg").value,
+        "stp_edge": this.frmPort.get("stp_edge").value,
+        "mtu": this.frmPort.get("mtu").value,
+        "disabled": this.frmPort.get("enabled").value == false,
+        "poe_disabled": this.frmPort.get("poe").value == false,
+        "description": this.frmPort.get("description").value,
+        "voip_network": this.frmPort.get("voip_network").value,
+        "storm_control": this.frmPort.get("storm_control").value,
+        "duplex": this.frmPort.get("duplex").value,
+        "speed": this.frmPort.get("speed").value
       }
-      this._http.post<any>('/api/devices/update/', body).subscribe({
-        next: data => {
-          this.topBarLoading = false
-          this.updateFrmDeviceValues(data.result)
-          this.getDevices()
-          this.openSnackBar("Device " + this.editingDevice.mac + " successfully provisioned", "Done")
-        },
-        error: error => {
-          this.topBarLoading = false
-          var message: string = "Unable to save changes to Device " + this.editingDevice.mac + "... "
-          if ("error" in error) { message += error["error"]["message"] }
-          this.openError(message)
-        }
-      })
-    }
+    })
+    console.log(this.editingPorts)
+    // if (this.frmPort.valid && !this.topBarLoading) {
+    //   this.topBarLoading = true
+    //   var body = {
+    //     host: this.host,
+    //     cookies: this.cookies,
+    //     headers: this.headers,
+    //     site_id: this.site_id,
+    //     org_id: this.org_id,
+    //     device: this.frmPort.getRawValue(),
+    //     device_id: this.editingDevice.device_id
+    //   }
+    //   this._http.post<any>('/api/devices/update/', body).subscribe({
+    //     next: data => {
+    //       this.topBarLoading = false
+    //       this.updateFrmDeviceValues(data.result)
+    //       this.getDevices()
+    //       this.openSnackBar("Device " + this.editingDevice.mac + " successfully provisioned", "Done")
+    //     },
+    //     error: error => {
+    //       this.topBarLoading = false
+    //       var message: string = "Unable to save changes to Device " + this.editingDevice.mac + "... "
+    //       if ("error" in error) { message += error["error"]["message"] }
+    //       this.openError(message)
+    //     }
+    //   })
+    // }
   }
   _discardDevice(): void {
     this.editingDevice = null;
@@ -375,7 +402,7 @@ export class DashboardComponent implements OnInit {
   /////           Ports Status
   //////////////////////////////////////////////////////////////////////////////
 
-  _getPortStatus():void {
+  _getPortStatus(): void {
     this._http.post<any>('/api/devices/portstatus/', {
       host: this.host,
       cookies: this.cookies,
@@ -398,20 +425,20 @@ export class DashboardComponent implements OnInit {
   /////           EDIT Port
   //////////////////////////////////////////////////////////////////////////////
   selectPortFromSwitchView(portName): void {
-    let port = this.editingDeviceSettings.ports[portName]    
+    let port = this.editingDeviceSettings.ports[portName]
     this.selectPort(port)
   }
 
   selectPort(port): void {
     if (this.editingPorts.includes(port)) {
       this._deletePort(port);
-      if (this.editingPorts.length == 1){
+      if (this.editingPorts.length == 1) {
         this._setPortFields(this.editingPorts[0])
       }
     }
     else {
       this._addPort(port);
-      if (this.editingPorts.length == 1){
+      if (this.editingPorts.length == 1) {
         this._setPortFields(this.editingPorts[0])
       } else if (this.editingPorts.length == 2) {
         this._setDefaultPortFielts()
@@ -442,33 +469,33 @@ export class DashboardComponent implements OnInit {
   }
 
   // Set Port Form values
-  _setDefaultPortFielts(): void { 
+  _setDefaultPortFielts(): void {
     this.updateFrmDeviceValues(this.defaultConfig)
   }
-  _setPortFields(port): void{
+  _setPortFields(port): void {
     var port_usage = ""
     // copy default values
-    var config = {...this.defaultConfig}
+    var config = { ...this.defaultConfig }
     // getting the port_usage profile name at the switch level, and, if none, at the site level
-    if ("usage" in port.device){
+    if ("usage" in port.device) {
       port_usage = port.device.usage
     } else if ("usage" in port.site) {
-      port_usage = port.site.usage      
+      port_usage = port.site.usage
     }
     // if there is a configured port_usage, retrieving its configuration at the switch level, and
     // if none, at the site level
-    if (port_usage){
+    if (port_usage) {
       var port_config = {}
-      if (port_usage in this.editingDeviceSettings.device.port_usages){
+      if (port_usage in this.editingDeviceSettings.device.port_usages) {
         port_config = this.editingDeviceSettings.device.port_usages[port_usage]
       }
-      else if (port_usage in this.editingDeviceSettings.site.port_usages){
-      port_config = this.editingDeviceSettings.site.port_usages[port_usage]
+      else if (port_usage in this.editingDeviceSettings.site.port_usages) {
+        port_config = this.editingDeviceSettings.site.port_usages[port_usage]
       }
       // setting the config object with the port_usage settings
-      for (var key in port_config){
+      for (var key in port_config) {
         config[key] = port_config[key]
-      }      
+      }
     }
     this.updateFrmDeviceValues(config)
   }
@@ -498,13 +525,13 @@ export class DashboardComponent implements OnInit {
     this.frmPort.controls["description"].setValue(config.description)
     this.frmPort.controls["voip_network"].setValue(config.voip_network)
     this.frmPort.controls["storm_control"].setValue(config.storm_control)
-    if (config.disable_autoneg == true){
-      this.frmPort.controls["duplex"] = new FormControl({value: config.duplex, disabled: true})
-      this.frmPort.controls["speed"] = new FormControl({value: config.speed, disabled: true})
+    if (config.disable_autoneg == true) {
+      this.frmPort.controls["duplex"] = new FormControl({ value: config.duplex, disabled: true })
+      this.frmPort.controls["speed"] = new FormControl({ value: config.speed, disabled: true })
     } else {
       this.frmPort.controls["speed"].setValue(config.speed)
       this.frmPort.controls["duplex"].setValue(config.duplex)
-      
+
     }
   }
 
