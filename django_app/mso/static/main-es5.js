@@ -2924,7 +2924,7 @@
 
       function DashboardComponent_div_17_div_14_span_3_Template(rf, ctx) {
         if (rf & 1) {
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span", 94);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span", 95);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1);
 
@@ -2942,7 +2942,7 @@
 
       function DashboardComponent_div_17_div_14_span_4_Template(rf, ctx) {
         if (rf & 1) {
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span", 94);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span", 95);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1, "Multi Selection");
 
@@ -2992,7 +2992,7 @@
 
       function DashboardComponent_div_17_div_14_mat_option_26_Template(rf, ctx) {
         if (rf & 1) {
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "mat-option", 95);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "mat-option", 96);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1);
 
@@ -3098,13 +3098,13 @@
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](23, "mat-select", 79);
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](24, "mat-option");
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](24, "mat-option", 80);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](25, "None");
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](26, DashboardComponent_div_17_div_14_mat_option_26_Template, 2, 3, "mat-option", 80);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](26, DashboardComponent_div_17_div_14_mat_option_26_Template, 2, 3, "mat-option", 81);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipe"](27, "mapToArray");
 
@@ -3120,7 +3120,7 @@
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](31, "mat-slide-toggle", 81);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](31, "mat-slide-toggle", 82);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](32, DashboardComponent_div_17_div_14_span_32_Template, 2, 0, "span", 31);
 
@@ -3130,9 +3130,9 @@
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](34, "div", 82);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](34, "div", 83);
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](35, "mat-form-field", 83);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](35, "mat-form-field", 84);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](36, "mat-label");
 
@@ -3140,39 +3140,39 @@
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](38, "mat-select", 84);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](38, "mat-select", 85);
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](39, "mat-option", 85);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](39, "mat-option", 86);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](40, "Auto");
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](41, "mat-option", 86);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](41, "mat-option", 87);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](42, "10M");
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](43, "mat-option", 87);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](43, "mat-option", 88);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](44, "100M");
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](45, "mat-option", 88);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](45, "mat-option", 89);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](46, "1G");
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](47, "mat-option", 89);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](47, "mat-option", 90);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](48, "2.5G");
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](49, "mat-option", 90);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](49, "mat-option", 91);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](50, "5G");
 
@@ -3182,7 +3182,7 @@
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](51, "mat-form-field", 83);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](51, "mat-form-field", 84);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](52, "mat-label");
 
@@ -3190,21 +3190,21 @@
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](54, "mat-select", 91);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](54, "mat-select", 92);
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](55, "mat-option", 85);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](55, "mat-option", 86);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](56, "Auto");
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](57, "mat-option", 92);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](57, "mat-option", 93);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](58, "Full");
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](59, "mat-option", 93);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](59, "mat-option", 94);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](60, "Half");
 
@@ -3278,9 +3278,9 @@
         if (rf & 1) {
           var _r72 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 96);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 97);
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "button", 97);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "button", 98);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function DashboardComponent_div_17_div_15_Template_button_click_1_listener() {
             _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r72);
@@ -3294,7 +3294,7 @@
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](3, "button", 98);
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](3, "button", 99);
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function DashboardComponent_div_17_div_15_Template_button_click_3_listener() {
             _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r72);
@@ -3971,7 +3971,7 @@
         },
         decls: 18,
         vars: 8,
-        consts: [[2, "margin", "0 1em"], ["fxLayout", "column", "fxLayoutAlign", "space-between stretch", 1, "max90vh", 2, "width", "20em", "min-width", "20em"], ["fxLayout", "column", 1, "psk-table-container", 2, "padding-right", "2em"], ["mat-table", "", 2, "background", "none", 3, "dataSource"], ["matColumnDef", "device"], ["mat-header-cell", "", "fxLayout", "column", "fxLayoutAlign", "space-between stretch", "style", "padding-right: 0; padding-left: 0; ", 4, "matHeaderCellDef"], ["mat-cell", "", 3, "ngClass", 4, "matCellDef"], ["mat-header-row", "", 4, "matHeaderRowDef"], ["mat-row", "", 4, "matRowDef", "matRowDefColumns"], [2, "background", "none", 3, "pageSizeOptions"], ["fxLayou", "row", "fxLayoutAlign", "start center", 2, "margin", "1em"], ["mat-raised-button", "", "color", "accent", 3, "click"], ["fxLayout", "column", "fxLayoutAlign", "center stretch", "fxFlex", "", 1, "mat-elevation-z2", "max90vh"], ["style", "text-align: center;font-size: large;color: gray;", 4, "ngIf"], ["fxLayout", "row", "fxLayoutAlign", "center center", "class", "max90vh", 4, "ngIf"], ["fxFlex", "", "fxLayout", "row", "class", "max90vh", 4, "ngIf"], ["mat-header-cell", "", "fxLayout", "column", "fxLayoutAlign", "space-between stretch", 2, "padding-right", "0", "padding-left", "0"], ["fxLayout", "row", 2, "margin-left", "24px"], ["matInput", "", "placeholder", "Ex. switch name", 3, "keyup"], ["input", ""], ["mat-button", "", 2, "height", "100%", "margin", "auto", 3, "disabled", "click"], ["matTooltip", "Refresh list", "aria-label", "Refresh list"], ["mode", "indeterminate", "color", "accent", 4, "ngIf"], ["style", "width: 100%; height: 4px; background-color: rgb(111 157 43);", 4, "ngIf"], ["mode", "indeterminate", "color", "accent"], [2, "width", "100%", "height", "4px", "background-color", "rgb(111 157 43)"], ["mat-cell", "", 3, "ngClass"], ["role", "button", "fxLayout", "row", "fxLayoutAlign", "start stretch", 1, "device", 2, "cursor", "pointer", 3, "click"], ["fxLayout", "row", "fxLayoutAlign", "start center"], ["aria-hidden", "false", 3, "ngStyle", 4, "ngIf"], ["fxLayout", "column", "fxLayoutAlign", "start stretch", "fxFlex", "", 2, "margin-left", "2em"], [4, "ngIf"], [2, "color", "gray", "font-weight", "lighter"], ["aria-hidden", "false", 3, "ngStyle"], ["mat-header-row", ""], ["mat-row", ""], [2, "text-align", "center", "font-size", "large", "color", "gray"], ["fxLayout", "row", "fxLayoutAlign", "center center", 1, "max90vh"], ["color", "accent"], ["fxFlex", "", "fxLayout", "row", 1, "max90vh"], ["matColumnDef", "ports", "fxLayout", "column", 2, "margin-left", "1em"], [2, "max-height", "100vh", "overflow", "auto"], ["class", "selectable", 3, "ngClass", 4, "ngFor", "ngForOf"], ["fxFlex", "", "fxLayout", "column", 1, "no-cursor", 2, "margin", "0 1em"], ["mat-dialog-content", "", "fxLayout", "column"], ["style", "margin-bottom: 0em;", 4, "ngFor", "ngForOf"], ["style", "margin: 1em;", "fxLayout", "row", 4, "ngIf"], ["mat-dialog-actions", "", "style", "justify-content: space-around;", "fxLayout", "row", 4, "ngIf"], [1, "selectable", 3, "ngClass"], ["role", "button", "fxLayout", "row", "fxLayoutAlign", "space-between stretch", 1, "device", 2, "cursor", "pointer"], ["fxLayout", "row", 2, "font-weight", "lighter", "padding", "0.5em", "border-bottom", "solid 1px lightgray", "width", "100%"], ["fxFill", "", 1, "expand-checkbox", 3, "checked", "change"], [2, "margin-bottom", "0em"], ["fxLayout", "column", "fxLayoutAlign", "start start", 1, "switch"], [2, "font-weight", "lighter"], ["fxLayout", "row", "fxLayoutAlign", "start stretch"], ["fxLayoutAlign", "center center", 2, "font-weight", "lighter", "font-size", "larger", "height", "100%"], [1, "ports-container"], ["fxLayout", "row", "fxLayoutAlign", "center center", "fxFlex", "grow", 1, "ports-text"], [2, "width", "60px", "height", "20px", "text-align", "center"], ["style", "cursor: pointer; z-index: 10;", 4, "ngFor", "ngForOf"], [2, "cursor", "pointer", "z-index", "10"], [1, "normal-port", 3, "matTooltip", "ngClass", "click"], ["fxLayout", "row", 2, "margin", "1em"], ["fxLayoutGap", "", "style", "margin:1em", 4, "ngFor", "ngForOf"], ["fxLayoutGap", "", 2, "margin", "1em"], [1, "member-details"], ["fxLayout", "row", "fxLayoutAlign", "start center", 4, "ngFor", "ngForOf"], ["aria-hidden", "false", "inline", "true", 2, "color", "#6f9d2b", "margin-right", "1em"], ["aria-hidden", "false", "inline", "true", 2, "color", "red", "margin-right", "1em"], ["fxLayout", "row"], ["inset", "true", 2, "margin", "1em"], ["class", "no-cursor", "style", "color: black; font-weight: light; width: 20em; text-align: center;", "fxFlex", "auto", 4, "ngIf"], ["fxLayout", "column", 1, "create-form", 3, "formGroup"], ["fxLayout", "column", 1, "mist-space-around"], ["formControlName", "enabled"], ["fxLayout", "column", 1, "mist-space"], ["formControlName", "poe"], ["appearance", "outline", 1, "mist-space"], ["formControlName", "port_network"], [3, "value", 4, "ngFor", "ngForOf"], ["formControlName", "autoneg"], [1, "mist-space"], ["appearance", "outline"], ["formControlName", "speed", 3, "disabled"], ["value", "auto"], ["value", "10"], ["value", "100"], ["value", "1000"], ["value", "2500"], ["value", "5000"], ["formControlName", "duplex", 3, "disabled"], ["value", "full"], ["value", "half"], ["fxFlex", "auto", 1, "no-cursor", 2, "color", "black", "font-weight", "light", "width", "20em", "text-align", "center"], [3, "value"], ["mat-dialog-actions", "", "fxLayout", "row", 2, "justify-content", "space-around"], ["mat-raised-button", "", 3, "click"], ["mat-raised-button", "", "color", "accent", 3, "disabled", "click"]],
+        consts: [[2, "margin", "0 1em"], ["fxLayout", "column", "fxLayoutAlign", "space-between stretch", 1, "max90vh", 2, "width", "20em", "min-width", "20em"], ["fxLayout", "column", 1, "psk-table-container", 2, "padding-right", "2em"], ["mat-table", "", 2, "background", "none", 3, "dataSource"], ["matColumnDef", "device"], ["mat-header-cell", "", "fxLayout", "column", "fxLayoutAlign", "space-between stretch", "style", "padding-right: 0; padding-left: 0; ", 4, "matHeaderCellDef"], ["mat-cell", "", 3, "ngClass", 4, "matCellDef"], ["mat-header-row", "", 4, "matHeaderRowDef"], ["mat-row", "", 4, "matRowDef", "matRowDefColumns"], [2, "background", "none", 3, "pageSizeOptions"], ["fxLayou", "row", "fxLayoutAlign", "start center", 2, "margin", "1em"], ["mat-raised-button", "", "color", "accent", 3, "click"], ["fxLayout", "column", "fxLayoutAlign", "center stretch", "fxFlex", "", 1, "mat-elevation-z2", "max90vh"], ["style", "text-align: center;font-size: large;color: gray;", 4, "ngIf"], ["fxLayout", "row", "fxLayoutAlign", "center center", "class", "max90vh", 4, "ngIf"], ["fxFlex", "", "fxLayout", "row", "class", "max90vh", 4, "ngIf"], ["mat-header-cell", "", "fxLayout", "column", "fxLayoutAlign", "space-between stretch", 2, "padding-right", "0", "padding-left", "0"], ["fxLayout", "row", 2, "margin-left", "24px"], ["matInput", "", "placeholder", "Ex. switch name", 3, "keyup"], ["input", ""], ["mat-button", "", 2, "height", "100%", "margin", "auto", 3, "disabled", "click"], ["matTooltip", "Refresh list", "aria-label", "Refresh list"], ["mode", "indeterminate", "color", "accent", 4, "ngIf"], ["style", "width: 100%; height: 4px; background-color: rgb(111 157 43);", 4, "ngIf"], ["mode", "indeterminate", "color", "accent"], [2, "width", "100%", "height", "4px", "background-color", "rgb(111 157 43)"], ["mat-cell", "", 3, "ngClass"], ["role", "button", "fxLayout", "row", "fxLayoutAlign", "start stretch", 1, "device", 2, "cursor", "pointer", 3, "click"], ["fxLayout", "row", "fxLayoutAlign", "start center"], ["aria-hidden", "false", 3, "ngStyle", 4, "ngIf"], ["fxLayout", "column", "fxLayoutAlign", "start stretch", "fxFlex", "", 2, "margin-left", "2em"], [4, "ngIf"], [2, "color", "gray", "font-weight", "lighter"], ["aria-hidden", "false", 3, "ngStyle"], ["mat-header-row", ""], ["mat-row", ""], [2, "text-align", "center", "font-size", "large", "color", "gray"], ["fxLayout", "row", "fxLayoutAlign", "center center", 1, "max90vh"], ["color", "accent"], ["fxFlex", "", "fxLayout", "row", 1, "max90vh"], ["matColumnDef", "ports", "fxLayout", "column", 2, "margin-left", "1em"], [2, "max-height", "100vh", "overflow", "auto"], ["class", "selectable", 3, "ngClass", 4, "ngFor", "ngForOf"], ["fxFlex", "", "fxLayout", "column", 1, "no-cursor", 2, "margin", "0 1em"], ["mat-dialog-content", "", "fxLayout", "column"], ["style", "margin-bottom: 0em;", 4, "ngFor", "ngForOf"], ["style", "margin: 1em;", "fxLayout", "row", 4, "ngIf"], ["mat-dialog-actions", "", "style", "justify-content: space-around;", "fxLayout", "row", 4, "ngIf"], [1, "selectable", 3, "ngClass"], ["role", "button", "fxLayout", "row", "fxLayoutAlign", "space-between stretch", 1, "device", 2, "cursor", "pointer"], ["fxLayout", "row", 2, "font-weight", "lighter", "padding", "0.5em", "border-bottom", "solid 1px lightgray", "width", "100%"], ["fxFill", "", 1, "expand-checkbox", 3, "checked", "change"], [2, "margin-bottom", "0em"], ["fxLayout", "column", "fxLayoutAlign", "start start", 1, "switch"], [2, "font-weight", "lighter"], ["fxLayout", "row", "fxLayoutAlign", "start stretch"], ["fxLayoutAlign", "center center", 2, "font-weight", "lighter", "font-size", "larger", "height", "100%"], [1, "ports-container"], ["fxLayout", "row", "fxLayoutAlign", "center center", "fxFlex", "grow", 1, "ports-text"], [2, "width", "60px", "height", "20px", "text-align", "center"], ["style", "cursor: pointer; z-index: 10;", 4, "ngFor", "ngForOf"], [2, "cursor", "pointer", "z-index", "10"], [1, "normal-port", 3, "matTooltip", "ngClass", "click"], ["fxLayout", "row", 2, "margin", "1em"], ["fxLayoutGap", "", "style", "margin:1em", 4, "ngFor", "ngForOf"], ["fxLayoutGap", "", 2, "margin", "1em"], [1, "member-details"], ["fxLayout", "row", "fxLayoutAlign", "start center", 4, "ngFor", "ngForOf"], ["aria-hidden", "false", "inline", "true", 2, "color", "#6f9d2b", "margin-right", "1em"], ["aria-hidden", "false", "inline", "true", 2, "color", "red", "margin-right", "1em"], ["fxLayout", "row"], ["inset", "true", 2, "margin", "1em"], ["class", "no-cursor", "style", "color: black; font-weight: light; width: 20em; text-align: center;", "fxFlex", "auto", 4, "ngIf"], ["fxLayout", "column", 1, "create-form", 3, "formGroup"], ["fxLayout", "column", 1, "mist-space-around"], ["formControlName", "enabled"], ["fxLayout", "column", 1, "mist-space"], ["formControlName", "poe"], ["appearance", "outline", 1, "mist-space"], ["formControlName", "port_network"], ["value", ""], [3, "value", 4, "ngFor", "ngForOf"], ["formControlName", "autoneg"], [1, "mist-space"], ["appearance", "outline"], ["formControlName", "speed", 3, "disabled"], ["value", "auto"], ["value", "10"], ["value", "100"], ["value", "1000"], ["value", "2500"], ["value", "5000"], ["formControlName", "duplex", 3, "disabled"], ["value", "full"], ["value", "half"], ["fxFlex", "auto", 1, "no-cursor", 2, "color", "black", "font-weight", "light", "width", "20em", "text-align", "center"], [3, "value"], ["mat-dialog-actions", "", "fxLayout", "row", 2, "justify-content", "space-around"], ["mat-raised-button", "", 3, "click"], ["mat-raised-button", "", "color", "accent", 3, "disabled", "click"]],
         template: function DashboardComponent_Template(rf, ctx) {
           if (rf & 1) {
             _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0);
