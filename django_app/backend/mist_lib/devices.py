@@ -170,7 +170,6 @@ class Devices(Common):
         }
         fpc = 0
         # Add information about each member of the VC (or the standalone)
-        print(device_stats["module_stat"])
         for member in device_stats["module_stat"]:
             tmp = {
                 "mac": member["mac"] if "mac" in member else "None",
@@ -193,7 +192,6 @@ class Devices(Common):
 
             # Generate the list of ports based on the HW model
             dev = ex_ref[member["model"]]
-            print(dev)
             for i in range(0, dev["rj45"]):
                 tmp["ports"].append("ge-{0}/0/{1}".format(fpc, i))
                 data["ports"]["ge-{0}/0/{1}".format(fpc, i)] = {
@@ -204,7 +202,6 @@ class Devices(Common):
                     "port": "xe-{0}/1/{1}".format(fpc, i), "site": {}, "device": {}}
             data["members"].append(tmp)
             fpc += 1
-        print(data["ports"])
         data = self._translate_mist_conf(data, site_settings, "site")
         data = self._translate_mist_conf(data, device_settings, "device")
 
