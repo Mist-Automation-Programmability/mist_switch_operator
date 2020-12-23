@@ -6,3 +6,5 @@ $mist-app-accent: mat-palette($mist-green, 700, 100, 400);
 $mist-app-warn: mat-palette($mat-red);
 $mist-app-theme: mat-light-theme($mist-app-primary, $mist-app-accent, $mist-app-warn);
 @include angular-material-theme($mist-app-theme);
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
