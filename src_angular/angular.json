@@ -124,5 +124,8 @@
       }
     }
   },
-  "defaultProject": "mso"
+  "defaultProject": "mso",
+  "cli": {
+    "defaultCollection": "@nativescript/schematics"
+  }
 }

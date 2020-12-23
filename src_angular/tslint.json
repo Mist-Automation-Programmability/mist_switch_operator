@@ -1,5 +1,8 @@
 {
-  "extends": "tslint:recommended",
+  "extends": [
+    "tslint:recommended",
+    "@nativescript/tslint-rules"
+  ],
   "rulesDirectory": [
     "codelyzer"
   ],
@@ -147,6 +150,14 @@
       "element",
       "app",
       "kebab-case"
+    ],
+    "prefer-mapped-imports": [
+      true,
+      {
+        "prefix": "@src/",
+        "prefix-mapped-to": "src/",
+        "base-url": "./"
+      }
     ]
   }
 }

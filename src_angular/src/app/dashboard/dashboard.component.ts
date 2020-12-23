@@ -385,9 +385,9 @@ export class DashboardComponent implements OnInit {
         "port_auth": this.frmPort.get("port_auth").value,
         "enable_mac_auth": this.frmPort.get("enable_mac_auth").value,
         "guest_network": this.frmPort.get("guest_network").value,
-        "mobypass_auth_when_server_downde": this.frmPort.get("bypass_auth_when_server_down").value,
+        "bypass_auth_when_server_down": this.frmPort.get("bypass_auth_when_server_down").value,
         "autoneg": this.frmPort.get("autoneg").value,
-        "mac_limit": this.frmPort.get("autoneg").value,
+        "mac_limit": this.frmPort.get("mac_limit").value,
         "stp_edge": this.frmPort.get("stp_edge").value,
         "mtu": this.frmPort.get("mtu").value,
         "disabled": this.frmPort.get("enabled").value == false,
@@ -413,8 +413,8 @@ export class DashboardComponent implements OnInit {
       this._http.post<any>('/api/devices/update/', body).subscribe({
         next: data => {
           this.topBarLoading = false
-          this.updateFrmDeviceValues(data.result)
-          this.getDevices()
+          //this.updateFrmDeviceValues(data.result)
+          this._getDeviceSettings()
           this.openSnackBar("Device " + this.editingDevice.mac + " successfully updated", "Done")
         },
         error: error => {
