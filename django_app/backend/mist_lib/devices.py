@@ -19,7 +19,6 @@ class Devices(Common):
         return self._get_devices(body)
 
     def _get_devices(self, body):
-        site_id = body["site_id"]
         try:
             extract = self.extractAuth(body)
             limit = 1000
@@ -29,13 +28,13 @@ class Devices(Common):
             while len(results) < int(total) and int(page) < 50:
                 device_type = "switch"
                 url = "https://{0}/api/v1/sites/{1}/devices?type={2}&limit={3}&page={4}".format(
-                    extract["host"], site_id, device_type, limit, page)
+                    extract["host"], body["site_id"], device_type, limit, page)
                 resp = requests.get(
                     url, headers=extract["headers"], cookies=extract["cookies"])
                 results.extend(resp.json())
                 total = resp.headers["X-Page-Total"]
                 page += 1
-            return self._get_devices_vc(extract, site_id, results)
+            return self._get_devices_vc(extract, body["site_id"], results)
         except:
             return {"status": 500, "data": {"message": "Unable to retrieve the inventory"}}
 
