@@ -83,7 +83,7 @@
 
 
             <div fxFlex fxLayout="column" style="margin:1em" class="no-cursor">
-                <div mat-dialog-content fxLayout="column">
+                <div mat-dialog-content fxLayout="column" style="height: 100vh;">
                     <!-- <div fxLayout="row wrap" fxLayoutAlign="center center">
                         <div fxLayout="column" fxLayoutAlign="center center" style="margin-bottom: 2em;" class="no-cursor">
                             <div *ngIf="editingDevice.status === 'connected'" fxLayout="row" fxLayoutAlign="center center">
@@ -169,7 +169,7 @@
                                     </tr>
                                     <tr>
                                         <th>POE Budget</th>
-                                        <td>{{member.poe.power_draw}}</td>
+                                        <td>{{member.poe.max_power}}</td>
                                     </tr>
                                     <tr>
                                         <th>TEMP</th>
