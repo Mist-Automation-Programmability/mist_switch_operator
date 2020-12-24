@@ -34,10 +34,6 @@ class Devices(Common):
                 results.extend(resp.json())
                 total = resp.headers["X-Page-Total"]
                 page += 1
-            results += results
-            results += results
-            results += results
-            results += results
             return self._get_devices_vc(extract, body["site_id"], results)
         except:
             return {"status": 500, "data": {"message": "Unable to retrieve the inventory"}}
