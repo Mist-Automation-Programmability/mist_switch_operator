@@ -213,7 +213,6 @@ export class DashboardComponent implements OnInit {
     this._appService.site_id.subscribe(site_id => this.site_id = site_id)
     this._appService.orgMode.subscribe(orgMode => this.orgMode = orgMode)
 
-
     this.getDevices();
 
     this._subscription = source.subscribe(s => this.getDevices());

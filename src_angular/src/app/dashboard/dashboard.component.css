@@ -1,6 +1,5 @@
 .max90vh {
-    max-height: 90vh;
-    min-height: 800px;
+    height: calc(100vh - 80px);
 }
 
 .card-outer {
