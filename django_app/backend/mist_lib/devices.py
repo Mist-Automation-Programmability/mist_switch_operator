@@ -95,6 +95,10 @@ class Devices(Common):
             resp = requests.get(
                 url, headers=extract["headers"], cookies=extract["cookies"])
             device_setting = resp.json()
+            device_config["ip_config"] = device_setting["ip_config"] if "ip_config" in device_setting else {}
+            device_config["oob_ip_config"] = device_setting["oob_ip_config"] if "oob_ip_config" in device_setting else {}
+            device_config["other_ip_configs"] = device_setting["other_ip_configs"] if "other_ip_configs" in device_setting else {}
+            device_config["managed"] = device_setting["managed"] if "managed" in device_setting else False
             device_config["networks"] = device_setting["networks"] if "networks" in device_setting else {}
             device_config["port_usages"] = device_setting["port_usages"] if "port_usages" in device_setting else {}
             device_config["port_config"] = device_setting["port_config"] if "port_config" in device_setting else {}
