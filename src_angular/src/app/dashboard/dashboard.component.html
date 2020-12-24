@@ -1,6 +1,6 @@
 <mat-sidenav fxLayout="column" fxLayoutAlign="space-between stretch" style="width:20em; min-width: 20em;" class="max90vh">
     <div>
-        <div fxLayout="column" class="psk-table-container" style="padding-right: 2em;">
+        <div fxLayout="column" class="psk-table-container">
             <table mat-table [dataSource]="filteredDevicesDatase" style="background: none;">
                 <ng-container matColumnDef="device">
                     <th mat-header-cell *matHeaderCellDef fxLayout="column" fxLayoutAlign="space-between stretch" style="padding-right: 0; padding-left: 0; ">
@@ -203,11 +203,11 @@
                                     </tr>
                                     <tr *ngIf="member.poe.power_draw">
                                         <th>POE</th>
-                                        <td>{{member.poe.power_draw}}</td>
+                                        <td>{{member.poe.power_draw}} W</td>
                                     </tr>
                                     <tr *ngIf="member.poe.max_power">
                                         <th>POE Budget</th>
-                                        <td>{{member.poe.max_power}}</td>
+                                        <td>{{member.poe.max_power}} W</td>
                                     </tr>
                                     <tr>
                                         <th>TEMP</th>
@@ -223,7 +223,7 @@
                                                     </mat-icon>
                                                 </div>
                                                 <div>
-                                                    {{temp.name}}: {{temp.celsius}}°C
+                                                    {{temp.name}}: {{temp.celsius}} °C
                                                 </div>
                                             </div>
                                         </td>
