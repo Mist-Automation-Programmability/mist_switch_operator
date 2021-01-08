@@ -2448,7 +2448,7 @@
 
           var ctx_r26 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2);
 
-          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](3, _c2, ctx_r26.editingPorts.includes(switchport_r31.value)));
+          _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](3, _c2, ctx_r26.canbeChecked(switchport_r31.value.port)));
 
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](3);
 
@@ -3934,6 +3934,11 @@
                 _this8.editingDeviceSettings = data;
                 _this8.displayedPorts = data.ports;
                 _this8.deviceLoading = false;
+                _this8.editingPorts = [];
+
+                _this8.editingPortNames.forEach(function (element) {
+                  _this8.editingPorts.push(_this8.editingDeviceSettings.ports[element]);
+                });
               },
               error: function error(_error4) {
                 _this8.deviceLoading = false;
@@ -3962,7 +3967,6 @@
           key: "powerDraw",
           value: function powerDraw(member) {
             var percentage = member.poe.power_draw / member.poe.max_power * 100;
-            console.log(percentage);
             return percentage;
           } //////////////////////////////////////////////////////////////////////////////
           /////           Ports Status

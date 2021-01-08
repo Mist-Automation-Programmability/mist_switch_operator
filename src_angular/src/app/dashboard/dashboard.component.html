@@ -69,7 +69,7 @@
                 <input matInput (keyup)="applyPortFilter($event)" placeholder="Ex. switch name" #input>
             </mat-form-field>
             <div style="overflow: auto;">
-                <div *ngFor="let switchport of displayedPorts | mapToArray" [ngClass]="{'selected': editingPorts.includes(switchport.value)}" class="selectable">
+                <div *ngFor="let switchport of displayedPorts | mapToArray" [ngClass]="{'selected': canbeChecked(switchport.value.port)}" class="selectable">
                     <a role="button" class="device" fxLayout="row" fxLayoutAlign="space-between stretch" style="cursor: pointer;">
                         <div fxLayout="row" style="font-weight: lighter;padding: 0.5em;border-bottom: solid 1px lightgray;width: 100%;">
                             <mat-checkbox fxFill [checked]="canbeChecked(switchport.value.port)" (change)="selectPort(switchport.value)" class="expand-checkbox">

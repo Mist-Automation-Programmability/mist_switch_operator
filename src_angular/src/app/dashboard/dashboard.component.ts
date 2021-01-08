@@ -13,6 +13,7 @@ import { ConnectorService } from '../connector.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { interval, Subscription } from 'rxjs';
+import { element } from 'protractor';
 
 
 // Configuration element from Devices Details
@@ -285,6 +286,10 @@ export class DashboardComponent implements OnInit {
         this.editingDeviceSettings = data
         this.displayedPorts = data.ports
         this.deviceLoading = false
+        this.editingPorts = []
+        this.editingPortNames.forEach(element => {
+          this.editingPorts.push(this.editingDeviceSettings.ports[element])
+        })
       },
       error: error => {
         this.deviceLoading = false
@@ -307,7 +312,6 @@ export class DashboardComponent implements OnInit {
   
   powerDraw(member) {
     var percentage = (member.poe.power_draw / member.poe.max_power) * 100
-    console.log(percentage)
     return percentage
   }
   

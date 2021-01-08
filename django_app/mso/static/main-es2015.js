@@ -1182,7 +1182,7 @@ function DashboardComponent_div_16_div_8_Template(rf, ctx) { if (rf & 1) {
 } if (rf & 2) {
     const switchport_r31 = ctx.$implicit;
     const ctx_r26 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](3, _c2, ctx_r26.editingPorts.includes(switchport_r31.value)));
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](3, _c2, ctx_r26.canbeChecked(switchport_r31.value.port)));
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](3);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("checked", ctx_r26.canbeChecked(switchport_r31.value.port));
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
@@ -1952,6 +1952,10 @@ class DashboardComponent {
                 this.editingDeviceSettings = data;
                 this.displayedPorts = data.ports;
                 this.deviceLoading = false;
+                this.editingPorts = [];
+                this.editingPortNames.forEach(element => {
+                    this.editingPorts.push(this.editingDeviceSettings.ports[element]);
+                });
             },
             error: error => {
                 this.deviceLoading = false;
@@ -1973,7 +1977,6 @@ class DashboardComponent {
     }
     powerDraw(member) {
         var percentage = (member.poe.power_draw / member.poe.max_power) * 100;
-        console.log(percentage);
         return percentage;
     }
     //////////////////////////////////////////////////////////////////////////////
