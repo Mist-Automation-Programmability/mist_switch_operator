@@ -22,6 +22,16 @@ You can run it as a strandalone Python application, or deploy it as a Docker con
 
 **Note**: The application is not providing secured HTTPS connections. It is highly recommended to deploy it behind a reverse proxy providing HTTPS encryption.
 
+### Standalone deployment
+1. download the github repository
+2. from the project folder, install the python dependencies (ex: `pip3 install -r requirements.txt`)
+3. from the `django_app`folder, start the app with `python3 ./manage.py runserver` (please see Djano server options with `python3 ./manage.py runserver -h`)
+
+### Docker Image
+The docker image is available on docker hub: https://hub.docker.com/repository/docker/tmunzer/mist_switch_operator_web_ui.
+
+
+The Docket image is listening on port TCP8000
 
 ## Configuration
 You can configure the settings through a configuration file or through Environment Variables.
