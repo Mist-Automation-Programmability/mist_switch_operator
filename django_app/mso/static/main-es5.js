@@ -3882,8 +3882,8 @@
                       _this7.editingDevice = element;
                     }
                   });
-                  _this7.filteredDevicesDatase = new _angular_material_table__WEBPACK_IMPORTED_MODULE_4__["MatTableDataSource"](data["results"]);
-                  _this7.filteredDevicesDatase.paginator = _this7.paginator;
+                  _this7.filteredDevicesDatabase = new _angular_material_table__WEBPACK_IMPORTED_MODULE_4__["MatTableDataSource"](data["results"]);
+                  _this7.filteredDevicesDatabase.paginator = _this7.paginator;
                   _this7.topBarLoading = false;
                 },
                 error: function error(_error3) {
@@ -4166,23 +4166,10 @@
           key: "updateFrmDeviceValues",
           value: function updateFrmDeviceValues(config) {
             this.frmPort.reset();
-            this.frmPort.controls["mode"].setValue(config.mode);
-            this.frmPort.controls["all_networks"].setValue(config.all_networks);
-            this.frmPort.controls["networks"].setValue(config.networks);
             this.frmPort.controls["port_network"].setValue(config.port_network);
-            this.frmPort.controls["port_auth"].setValue(config.port_auth);
-            this.frmPort.controls["enable_mac_auth"].setValue(config.enable_mac_auth);
-            this.frmPort.controls["guest_network"].setValue(config.guest_network);
-            this.frmPort.controls["bypass_auth_when_server_down"].setValue(config.bypass_auth_when_server_down);
             this.frmPort.controls["autoneg"].setValue(config.disable_autoneg == false);
-            this.frmPort.controls["mac_limit"].setValue(config.mac_limit);
-            this.frmPort.controls["stp_edge"].setValue(config.stp_edge);
-            this.frmPort.controls["mtu"].setValue(config.mtu);
             this.frmPort.controls["enabled"].setValue(config.disabled == false);
             this.frmPort.controls["poe"].setValue(config.poe_disabled == false);
-            this.frmPort.controls["description"].setValue(config.description);
-            this.frmPort.controls["voip_network"].setValue(config.voip_network);
-            this.frmPort.controls["storm_control"].setValue(config.storm_control);
 
             if (config.disable_autoneg == true) {
               this.frmPort.controls["duplex"] = new _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormControl"]({
@@ -4221,10 +4208,10 @@
           key: "applyFilter",
           value: function applyFilter(event) {
             var filterValue = event.target.value.trim().toLowerCase();
-            this.filteredDevicesDatase.filter = filterValue.trim().toLowerCase();
+            this.filteredDevicesDatabase.filter = filterValue.trim().toLowerCase();
 
-            if (this.filteredDevicesDatase.paginator) {
-              this.filteredDevicesDatase.paginator.firstPage();
+            if (this.filteredDevicesDatabase.paginator) {
+              this.filteredDevicesDatabase.paginator.firstPage();
             }
           }
         }, {
@@ -4355,7 +4342,7 @@
           if (rf & 2) {
             _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](3);
 
-            _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("dataSource", ctx.filteredDevicesDatase);
+            _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("dataSource", ctx.filteredDevicesDatabase);
 
             _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
 

@@ -188,7 +188,7 @@ export class DashboardComponent implements OnInit {
   editingPortsStatus = {}
   displayedPorts = {}
 
-  filteredDevicesDatase: MatTableDataSource<DeviceElement> | null;
+  filteredDevicesDatabase: MatTableDataSource<DeviceElement> | null;
   devices: DeviceElement[] = []
 
   resultsLength = 0;
@@ -243,9 +243,9 @@ export class DashboardComponent implements OnInit {
               this.editingDevice = element;
             }
           });
-          this.filteredDevicesDatase = new MatTableDataSource(data["results"]);
+          this.filteredDevicesDatabase = new MatTableDataSource(data["results"]);
 
-          this.filteredDevicesDatase.paginator = this.paginator;
+          this.filteredDevicesDatabase.paginator = this.paginator;
           this.topBarLoading = false;
         },
         error: error => {
@@ -476,30 +476,16 @@ export class DashboardComponent implements OnInit {
   //////////////////////////////////////////////////////////////////////////////
   updateFrmDeviceValues(config: PortElement): void {
     this.frmPort.reset()
-    this.frmPort.controls["mode"].setValue(config.mode)
-    this.frmPort.controls["all_networks"].setValue(config.all_networks)
-    this.frmPort.controls["networks"].setValue(config.networks)
     this.frmPort.controls["port_network"].setValue(config.port_network)
-    this.frmPort.controls["port_auth"].setValue(config.port_auth)
-    this.frmPort.controls["enable_mac_auth"].setValue(config.enable_mac_auth)
-    this.frmPort.controls["guest_network"].setValue(config.guest_network)
-    this.frmPort.controls["bypass_auth_when_server_down"].setValue(config.bypass_auth_when_server_down)
     this.frmPort.controls["autoneg"].setValue(config.disable_autoneg == false)
-    this.frmPort.controls["mac_limit"].setValue(config.mac_limit)
-    this.frmPort.controls["stp_edge"].setValue(config.stp_edge)
-    this.frmPort.controls["mtu"].setValue(config.mtu)
     this.frmPort.controls["enabled"].setValue(config.disabled == false)
     this.frmPort.controls["poe"].setValue(config.poe_disabled == false)
-    this.frmPort.controls["description"].setValue(config.description)
-    this.frmPort.controls["voip_network"].setValue(config.voip_network)
-    this.frmPort.controls["storm_control"].setValue(config.storm_control)
     if (config.disable_autoneg == true) {
       this.frmPort.controls["duplex"] = new FormControl({ value: config.duplex, disabled: true })
       this.frmPort.controls["speed"] = new FormControl({ value: config.speed, disabled: true })
     } else {
       this.frmPort.controls["speed"].setValue(config.speed)
       this.frmPort.controls["duplex"].setValue(config.duplex)
-
     }
   }
 
@@ -520,10 +506,10 @@ export class DashboardComponent implements OnInit {
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
-    this.filteredDevicesDatase.filter = filterValue.trim().toLowerCase();
+    this.filteredDevicesDatabase.filter = filterValue.trim().toLowerCase();
 
-    if (this.filteredDevicesDatase.paginator) {
-      this.filteredDevicesDatase.paginator.firstPage();
+    if (this.filteredDevicesDatabase.paginator) {
+      this.filteredDevicesDatabase.paginator.firstPage();
     }
   }
 

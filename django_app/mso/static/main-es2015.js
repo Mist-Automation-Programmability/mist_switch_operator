@@ -1911,8 +1911,8 @@ class DashboardComponent {
                             this.editingDevice = element;
                         }
                     });
-                    this.filteredDevicesDatase = new _angular_material_table__WEBPACK_IMPORTED_MODULE_4__["MatTableDataSource"](data["results"]);
-                    this.filteredDevicesDatase.paginator = this.paginator;
+                    this.filteredDevicesDatabase = new _angular_material_table__WEBPACK_IMPORTED_MODULE_4__["MatTableDataSource"](data["results"]);
+                    this.filteredDevicesDatabase.paginator = this.paginator;
                     this.topBarLoading = false;
                 },
                 error: error => {
@@ -2140,23 +2140,10 @@ class DashboardComponent {
     //////////////////////////////////////////////////////////////////////////////
     updateFrmDeviceValues(config) {
         this.frmPort.reset();
-        this.frmPort.controls["mode"].setValue(config.mode);
-        this.frmPort.controls["all_networks"].setValue(config.all_networks);
-        this.frmPort.controls["networks"].setValue(config.networks);
         this.frmPort.controls["port_network"].setValue(config.port_network);
-        this.frmPort.controls["port_auth"].setValue(config.port_auth);
-        this.frmPort.controls["enable_mac_auth"].setValue(config.enable_mac_auth);
-        this.frmPort.controls["guest_network"].setValue(config.guest_network);
-        this.frmPort.controls["bypass_auth_when_server_down"].setValue(config.bypass_auth_when_server_down);
         this.frmPort.controls["autoneg"].setValue(config.disable_autoneg == false);
-        this.frmPort.controls["mac_limit"].setValue(config.mac_limit);
-        this.frmPort.controls["stp_edge"].setValue(config.stp_edge);
-        this.frmPort.controls["mtu"].setValue(config.mtu);
         this.frmPort.controls["enabled"].setValue(config.disabled == false);
         this.frmPort.controls["poe"].setValue(config.poe_disabled == false);
-        this.frmPort.controls["description"].setValue(config.description);
-        this.frmPort.controls["voip_network"].setValue(config.voip_network);
-        this.frmPort.controls["storm_control"].setValue(config.storm_control);
         if (config.disable_autoneg == true) {
             this.frmPort.controls["duplex"] = new _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormControl"]({ value: config.duplex, disabled: true });
             this.frmPort.controls["speed"] = new _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormControl"]({ value: config.speed, disabled: true });
@@ -2181,9 +2168,9 @@ class DashboardComponent {
     }
     applyFilter(event) {
         const filterValue = event.target.value.trim().toLowerCase();
-        this.filteredDevicesDatase.filter = filterValue.trim().toLowerCase();
-        if (this.filteredDevicesDatase.paginator) {
-            this.filteredDevicesDatase.paginator.firstPage();
+        this.filteredDevicesDatabase.filter = filterValue.trim().toLowerCase();
+        if (this.filteredDevicesDatabase.paginator) {
+            this.filteredDevicesDatabase.paginator.firstPage();
         }
     }
     applyPortFilter(event) {
@@ -2256,7 +2243,7 @@ DashboardComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefin
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     } if (rf & 2) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](3);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("dataSource", ctx.filteredDevicesDatase);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("dataSource", ctx.filteredDevicesDatabase);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("matHeaderRowDef", ctx.displayedColumns);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
