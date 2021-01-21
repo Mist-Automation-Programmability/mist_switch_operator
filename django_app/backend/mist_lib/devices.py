@@ -59,8 +59,10 @@ class Devices(Common):
                     extract["host"], site_id, device_id)
                 resp = requests.get(
                     url, headers=extract["headers"], cookies=extract["cookies"])
+                tmp = resp.json()
+                tmp["name"] = device["name"]
                 logging.info("Device:{0}:VC: Done".format(site_id))
-                data.append(resp.json())
+                data.append(tmp)
             except:
                 logging.error("Device:{0}:VC: Error".format(site_id))
                 #return {"status": 500, "data": {"message": "Unable to retrieve information for device {0}".format(device_id)}}
