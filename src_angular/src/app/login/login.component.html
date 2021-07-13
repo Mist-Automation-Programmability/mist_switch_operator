@@ -43,14 +43,14 @@
                     </div>
                     <div fxLayout="column" class="login-form-or">
                         <mat-divider [vertical]="true"></mat-divider>
-                        <button mat-fab color="accent" aria-label="OR" class="disable-click">
+                        <button mat-fab color="accent" aria-label="OR" class="disable-click" style="margin-bottom: 4em;">
                             OR
                         </button>
                         <mat-divider [vertical]="true"></mat-divider>
                     </div>
                     <div fxLayout="column" class="login-form-inputs">
                         <h1>Access with API Token</h1>
-                        <mat-form-field appearance="outline">
+                        <mat-form-field appearance="outline" style="padding: 0;">
                             <mat-label>API Token</mat-label>
                             <input type="text" matInput formControlName="token" (keydown.enter)="submitToken()" />
                         </mat-form-field>
@@ -72,7 +72,12 @@
     </form>
 
 </mat-card>
-
-<div *ngIf="show_github_fork_me" class="github-fork-me">
-    <a class="github-fork-me" href="https://github.com/tmunzer/mist_claim_web_ui" target="_blank"><img loading="lazy" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_red_aa0000.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
+<div class="disclaimer">
+    <div>
+        {{disclaimer}}
+    </div>
+</div>
+<div class="source">
+    <a *ngIf="github_url" href={{github_url}} target="_blank"><img src="assets/github.png"></a>
+    <a *ngIf="docker_url" href={{docker_url}} target="_blank"><img src="assets/docker.png"></a>
 </div>

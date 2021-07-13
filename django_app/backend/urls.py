@@ -11,6 +11,7 @@ urlpatterns = [
     path('sites/', views.get_sites, name='get_sites'),    
     #path('sites/derived/', views.get_site_derived, name='get_site_derived'),
     path('script', views.script, name="googlemaps"),
-    path('gap', views.gap, name="gap")
+    path('gap', views.gap, name="gap"),
+    path('disclaimer', views.disclaimer, name="disclaimer")
 ]
 

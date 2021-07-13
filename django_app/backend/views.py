@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import time
 import logging
+import os
 
 from .mist_lib.devices import Devices
 from .mist_lib.sites import Sites
@@ -14,33 +15,22 @@ from .mist_lib.sites import Sites
 try:
     from .config import google_api_key
 except:
-    import os
     google_api_key = os.environ.get("GOOGLE_API_KEY", default="")
-#     if smtp_enabled:
-#         smtp_config = {
-#             "host": os.environ.get("MIST_SMTP_HOST", default=None),
-#             "port": os.environ.get("MIST_SMTP_PORT", default=587),
-#             "use_ssl": os.environ.get("MIST_SMTP_SSL", default=True),
-#             "username": os.environ.get("MIST_SMTP_USER", default=None),
-#             "password": os.environ.get("MIST_SMTP_PASSWORD", default=None),
-#             "from_name": os.environ.get("MIST_SMTP_FROM_NAME", default="Wi-Fi Access"),
-#             "from_email": os.environ.get("MIST_SMTP_FROM_EMAIL", default=None),
-#             "logo_url": os.environ.get("MIST_SMTP_LOGO_URL", default="https://cdn.mist.com/wp-content/uploads/logo.png"),
-#             "enable_qrcode": os.environ.get("MIST_SMTP_QRCODE", default=True)
-#         }
-#     else:
-#         smtp_config = None
 
-# try:
-#     from .config import psk_config
-# except:
-#     psk_config = {
-#         "salt": os.environ.get("MIST_PSK_SALT", default="$2b$12$SIGWr574/7OggDO4BBJ1D."),
-#         "length": int(os.environ.get("MIST_PSK_LENGTH", default=12))
-#     }
-# psk_config["salt"] = str.encode(psk_config["salt"])
+try:
+    from .config import app_disclaimer
+except:
+    app_disclaimer = os.environ.get("APP_DISCLAIMER", default="")
 
-# mist_smtp = Mist_SMTP(smtp_config)
+try:
+    from .config import app_github_url
+except:
+    app_github_url = os.environ.get("APP_GITHUB_URL", default="")
+
+try:
+    from .config import app_docker_url
+except:
+    app_docker_url = os.environ.get("APP_DOCKER_URL", default="")
 
 
 ##########
@@ -72,7 +62,6 @@ def update_device_settings(request):
         return Http404
 
 
-
 ##########
 # Switch Port
 
@@ -82,7 +71,7 @@ def get_port_status(request):
         response = Devices().get_device_ports_status(request.body)
         return JsonResponse(status=response["status"], data=response["data"])
     else:
-        return Http404    
+        return Http404
 
 ##########
 # Sites
@@ -176,6 +165,16 @@ def login(request):
 def gap(request):
     if request.method == "GET":
         return JsonResponse({"gap": google_api_key})
+
+
+@csrf_exempt
+def disclaimer(request):
+    if request.method == "GET":
+        return JsonResponse({
+            "disclaimer": app_disclaimer,
+            "github_url": app_github_url,
+            "docker_url": app_docker_url
+        })
 
 
 @csrf_exempt

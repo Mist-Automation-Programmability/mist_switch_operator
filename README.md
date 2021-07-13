@@ -60,4 +60,5 @@ A configuration example with explanation is avaiable in the `django/backend/conf
 DJANGO_DEBUG | Number | 0 | Whether or not Django starts in Debug Mode (0=Production, 1=Debug) |
 DJANGO_ALLOWED_HOSTS | String |  | FQDN on which Django is listening. Only used in Production Mode |
 GOOGLE_API_KEY | String | | Google API Key to use [Google Map Javascript API](https://developers.google.com/maps/gmp-get-started) |
+APP_DISLCAIMER | String | | Disclaimer to display on the login page | 
 
