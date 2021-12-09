@@ -62,7 +62,7 @@ mat-card {
 .disclaimer {
     width: 50em;
     text-align: center;
-    margin: auto;
+    margin: 5em auto;
     text-transform: uppercase;
     font-family: Roboto, "Helvetica Neue", sans-serif;
     font-weight: 100;
