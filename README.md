@@ -17,7 +17,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 - update switch settings
 
 
-<img src="https://github.com/tmunzer/mist_switch_operator/raw/main/._readme/main.png"  width="75%"  />
+<img src="https://github.com/tmunzer/mist_switch_operator/raw/main/._readme/img/main.png"  width="75%"  />
 
 
 ## How it's working
