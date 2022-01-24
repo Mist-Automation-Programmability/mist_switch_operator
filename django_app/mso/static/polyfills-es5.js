@@ -466,7 +466,7 @@
     /***/
     function _(module, exports, __webpack_require__) {
       __webpack_require__(
-      /*! /Users/tmunzer/4_dev/Mist/mist_switch_operator_web_ui/src_angular/node_modules/@angular-devkit/build-angular/src/webpack/es5-polyfills.js */
+      /*! /Users/tmunzer/4_dev/Mist/switch_operator/src_angular/node_modules/@angular-devkit/build-angular/src/webpack/es5-polyfills.js */
       "voQr");
 
       __webpack_require__(
@@ -474,7 +474,7 @@
       "R0gw");
 
       module.exports = __webpack_require__(
-      /*! /Users/tmunzer/4_dev/Mist/mist_switch_operator_web_ui/src_angular/src/polyfills.ts */
+      /*! /Users/tmunzer/4_dev/Mist/switch_operator/src_angular/src/polyfills.ts */
       "hN/g");
       /***/
     },
