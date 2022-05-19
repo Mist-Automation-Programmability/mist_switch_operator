@@ -11,5 +11,9 @@ RUN pip install --no-cache-dir django whitenoise requests
 COPY ./django_app/ /app/
 WORKDIR /app
 
+RUN addgroup --gid 1000 -S mistlab && adduser --uid 1000 -S mistlab -G mistlab
+RUN chown -R mistlab:mistlab /app
+USER mistlab
+
 EXPOSE 8000
 CMD ["python","-u","/app/manage.py", "runserver", "0.0.0.0:8000"]
