@@ -1,4 +1,4 @@
-<mat-sidenav fxLayout="column" fxLayoutAlign="space-between stretch" style="width:20em; min-width: 20em;" class="max90vh">
+<mat-sidenav fxLayout="column" fxLayoutAlign="space-between stretch" style="width:23em; min-width: 23em;" class="max90vh">
     <div>
         <div fxLayout="column" class="psk-table-container">
             <table mat-table [dataSource]="filteredDevicesDatabase" style="background: none;">
@@ -59,7 +59,7 @@
     </div>
 
     <div *ngIf="deviceLoading" fxLayout="row" fxLayoutAlign="center center" class="">
-        <mat-spinner color="accent"></mat-spinner>
+        <mat-spinner color="accent" strokeWidth=3></mat-spinner>
     </div>
 
     <div *ngIf="editingDevice && !deviceLoading" fxFlex fxLayout="row" style="height: 100%;">
@@ -68,7 +68,7 @@
                 <mat-label>Filter</mat-label>
                 <input matInput (keyup)="applyPortFilter($event)" placeholder="Ex. switch name" #input>
             </mat-form-field>
-            <div style="overflow: auto;">
+            <div style="overflow: auto; height: 100%">
                 <div *ngFor="let switchport of displayedPorts | mapToArray" [ngClass]="{'selected': canbeChecked(switchport.value.port)}" class="selectable">
                     <a role="button" class="device" fxLayout="row" fxLayoutAlign="space-between stretch" style="cursor: pointer;">
                         <div fxLayout="row" style="font-weight: lighter;padding: 0.5em;border-bottom: solid 1px lightgray;width: 100%;">

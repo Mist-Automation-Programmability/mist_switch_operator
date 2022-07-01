@@ -5,8 +5,7 @@ from django.http import JsonResponse, HttpResponse, Http404
 import json
 from django.views.decorators.csrf import csrf_exempt
 import json
-import time
-import logging
+import ast
 import os
 
 from .mist_lib.devices import Devices
@@ -31,6 +30,12 @@ try:
     from .config import app_docker_url
 except:
     app_docker_url = os.environ.get("APP_DOCKER_URL", default="")
+
+try:
+    from .config import mist_hosts
+except:
+    mist_hosts = ast.literal_eval(os.environ.get("MIST_HOSTS", default='{"Global 01 - manage.mist.com": "api.mist.com", "Global 02 - manage.gc1.mist.com": "api.gc1.mist.com", "Global 03 - manage.ac2.mist.com": "api.ac2.mist.com","Global 04 - manage.gc2.mist.com": "api.gc2.mist.com", "Europe 01 - manage.eu.mist.com": "api.eu.mist.com"}'))
+
 
 
 ##########
@@ -161,13 +166,11 @@ def login(request):
 #         else:
 #             return JsonResponse(status=500, data={"message": "missing parametesr"})
 
-@csrf_exempt
 def gap(request):
     if request.method == "GET":
         return JsonResponse({"gap": google_api_key})
 
 
-@csrf_exempt
 def disclaimer(request):
     if request.method == "GET":
         return JsonResponse({
@@ -177,7 +180,6 @@ def disclaimer(request):
         })
 
 
-@csrf_exempt
 def script(request):
     if request.method == "GET":
         data = """
@@ -192,3 +194,12 @@ window.initMap = function() {{
 document.head.appendChild(script);
         """.format(google_api_key)
         return HttpResponse(data, content_type="application/javascript")
+
+
+def hosts(request):
+    if request.method == "GET":
+        data = []
+        for key in mist_hosts:
+            data.append({"value": mist_hosts[key], "viewValue": key})
+        data = sorted(data, key=lambda x: x["viewValue"])
+        return HttpResponse(json.dumps(data))

@@ -10,6 +10,11 @@ import { TwoFactorDialog } from './login-2FA';
 export interface TwoFactorData {
   twoFactor: string;
 }
+export interface HostElement {
+  value: string,
+  viewValue: string
+}
+
 
 @Component({
   selector: 'app-login',
@@ -32,15 +37,12 @@ export class LoginComponent implements OnInit {
   cookies = {};
   self = {};
   loading: boolean;
-  hosts = [
-    { value: 'api.mist.com', viewValue: 'US - manage.mist.com' },
-    { value: 'api.eu.mist.com', viewValue: 'EU - manage.eu.mist.com' },
-    { value: 'api.gc1.mist.com', viewValue: 'GCP - manage.gc1.mist.com' }
-  ];
+  hosts_loading : boolean = true;
+  hosts: HostElement[]  = [];
 
   // LOGIN FORM
   frmStepLogin = this._formBuilder.group({
-    host: [''],
+    host: ['api.mist.com'],
     credentials: this._formBuilder.group({
       email: [''],
       password: [''],
@@ -72,6 +74,12 @@ export class LoginComponent implements OnInit {
         if (data.disclaimer) this.disclaimer = data.disclaimer;
         if (data.github_url) this.github_url = data.github_url;
         if (data.docker_url) this.docker_url = data.docker_url;
+      }
+    })
+    this._http.get<HostElement[]>("/api/hosts").subscribe({
+      next: data =>{ 
+        this.hosts = data;
+        this.hosts_loading = false;
       }
     })
   }
@@ -110,9 +118,7 @@ export class LoginComponent implements OnInit {
       if ("detail" in data.data) {
         this.error_message(data["method"], data.data.detail);
       } else if ("two_factor_required" in data.data && "two_factor_passed" in data.data) {
-        if (data.data["two_factor_required"] == false) {
-          this.authenticated(data)
-        } else if (data.data["two_factor_passed"] == true) {
+        if (data.data["two_factor_required"] == false || data.data["two_factor_passed"] == true) {
           this.authenticated(data)
         } else {
           this.open2FA()

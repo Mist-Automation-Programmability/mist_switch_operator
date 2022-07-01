@@ -213,15 +213,20 @@ export class DashboardComponent implements OnInit {
     this._appService.org_id.subscribe(org_id => this.org_id = org_id)
     this._appService.site_id.subscribe(site_id => this.site_id = site_id)
     this._appService.orgMode.subscribe(orgMode => this.orgMode = orgMode)
-    
-    this.getDevices();
 
-    this._subscription = source.subscribe(s => this.getDevices());
+    if (!this.host) {
+      this._router.navigate(["/"]);
+    } else {
+      this.getDevices();
+      this._subscription = source.subscribe(s => this.getDevices());
+    }
 
   }
 
   ngOnDestroy() {
-    this._subscription.unsubscribe();
+    if (this._subscription) {
+      this._subscription.unsubscribe();
+    }
   }
 
 
@@ -309,16 +314,16 @@ export class DashboardComponent implements OnInit {
     this.displayedPorts = {};
     this._discardPorts()
   }
-  
+
   powerDraw(member) {
     var percentage = (member.poe.power_draw / member.poe.max_power) * 100
     return percentage
   }
-  
+
   //////////////////////////////////////////////////////////////////////////////
   /////           Ports Status
   //////////////////////////////////////////////////////////////////////////////
-  
+
   _getPortStatus(): void {
     this._http.post<any>('/api/devices/portstatus/', {
       host: this.host,
@@ -345,7 +350,7 @@ export class DashboardComponent implements OnInit {
     let port = this.editingDeviceSettings.ports[portName]
     this.selectPort(port)
   }
-  
+
   selectPort(port): void {
     if (this.editingPorts.includes(port)) {
       this._deletePort(port);
@@ -362,7 +367,7 @@ export class DashboardComponent implements OnInit {
       }
     }
   }
-  
+
   // ADD or REMOVE ports from the editing list
   _addPort(port): void {
     this.editingPorts.push(port);
@@ -377,7 +382,7 @@ export class DashboardComponent implements OnInit {
       this._discardPorts()
     }
   }
-  
+
   savePorts(): void {
     this.editingPorts.forEach(element => {
       element["new_conf"] = {
