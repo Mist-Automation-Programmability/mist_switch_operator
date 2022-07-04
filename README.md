@@ -40,7 +40,8 @@ You can run it as a strandalone Python application, or deploy it as a Docker con
 ### Standalone deployment
 1. download the github repository
 2. from the project folder, install the python dependencies (ex: `pip3 install -r requirements.txt`)
-3. from the `django_app`folder, start the app with `python3 ./manage.py runserver` (please see Djano server options with `python3 ./manage.py runserver -h`)
+3. create a `config.py` file in the directory `django/backend/` with the required settings. A configuration example with explanation is avaiable in  `django/backend/config_example.py`. 
+4. from the `django_app`folder, start the app with `python3 ./manage.py runserver` (please see Djano server options with `python3 ./manage.py runserver -h`)
 
 ### Docker Image
 The docker image is available on docker hub: https://hub.docker.com/repository/docker/tmunzer/mist_switch_operator_web_ui.
@@ -50,9 +51,6 @@ The Docket image is listening on port TCP8000
 
 ## Configuration
 You can configure the settings through a configuration file or through Environment Variables.
-
-### Configuration File
-A configuration example with explanation is avaiable in the `django/backend/config_example.py`. This file must be edited and renamed `config.py`.
 
 ### Environment Variables
 | Variable Name | Type | Default Value | Comment |
