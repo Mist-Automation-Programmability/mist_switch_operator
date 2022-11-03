@@ -24,7 +24,7 @@
         "@angular/platform-browser": "^13.3.11",
         "@angular/platform-browser-dynamic": "^13.3.11",
         "@angular/router": "^13.3.11",
-        "@schematics/angular": "^10.2.1",
+        "@schematics/angular": "^10.2.4",
         "bootstrap": "^4.5.0",
         "org": "^0.2.0",
         "rxjs": "~6.6.0",
