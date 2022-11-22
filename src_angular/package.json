@@ -28,7 +28,7 @@
         "bootstrap": "^4.5.0",
         "org": "^0.2.0",
         "rxjs": "~6.6.0",
-        "tslib": "^2.0.0",
+        "tslib": "^2.4.1",
         "zone.js": "~0.11.4"
     },
     "devDependencies": {
