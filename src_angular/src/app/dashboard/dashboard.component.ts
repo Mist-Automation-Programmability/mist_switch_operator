@@ -1,17 +1,17 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { HttpClient } from '@angular/common/http';
-import { FormBuilder, Validators, FormControl } from '@angular/forms';
+import { UntypedFormBuilder, Validators, UntypedFormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { MatPaginator } from '@angular/material/paginator';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
 
 import { ErrorDialog } from '../common/common-error';
 
 
 import { ConnectorService } from '../connector.service';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { interval, Subscription } from 'rxjs';
 import { element } from 'protractor';
 
@@ -197,7 +197,7 @@ export class DashboardComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(private _router: Router, private _http: HttpClient, private _appService: ConnectorService, public _dialog: MatDialog, private _formBuilder: FormBuilder, private _snackBar: MatSnackBar) { }
+  constructor(private _router: Router, private _http: HttpClient, private _appService: ConnectorService, public _dialog: MatDialog, private _formBuilder: UntypedFormBuilder, private _snackBar: MatSnackBar) { }
 
   //////////////////////////////////////////////////////////////////////////////
   /////           INIT
@@ -486,8 +486,8 @@ export class DashboardComponent implements OnInit {
     this.frmPort.controls["enabled"].setValue(config.disabled == false)
     this.frmPort.controls["poe"].setValue(config.poe_disabled == false)
     if (config.disable_autoneg == true) {
-      this.frmPort.controls["duplex"] = new FormControl({ value: config.duplex, disabled: true })
-      this.frmPort.controls["speed"] = new FormControl({ value: config.speed, disabled: true })
+      this.frmPort.controls["duplex"] = new UntypedFormControl({ value: config.duplex, disabled: true })
+      this.frmPort.controls["speed"] = new UntypedFormControl({ value: config.speed, disabled: true })
     } else {
       this.frmPort.controls["speed"].setValue(config.speed)
       this.frmPort.controls["duplex"].setValue(config.duplex)
