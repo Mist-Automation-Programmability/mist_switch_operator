@@ -267,17 +267,17 @@ export class DashboardComponent implements OnInit {
   //////////////////////////////////////////////////////////////////////////////
   editDevice(device: DeviceElement): void {
     if (device == this.editingDevice) {
-      this._discardDevice();
+      this.discardDevice();
     }
     else {
-      this._discardDevice();
+      this.discardDevice();
       this.editingDevice = device;
-      this._getDeviceSettings()
-      this._getPortStatus()
+      this.getDeviceSettings()
+      this.getPortStatus()
     }
   }
 
-  _getDeviceSettings(): void {
+  private getDeviceSettings(): void {
     this.deviceLoading = true
     this._http.post<any>('/api/devices/settings/', {
       host: this.host,
@@ -305,13 +305,20 @@ export class DashboardComponent implements OnInit {
   }
 
 
-  _discardDevice(): void {
+  discardDevice(): void {
     this.editingDevice = null;
     this.editingDeviceSettings = null;
     this.editingPorts = [];
     this.editingPortNames = [];
     this.displayedPorts = {};
-    this._discardPorts()
+    this.discardPorts();
+  }
+
+  // Reset the ports selection and form
+  private discardPorts(): void {
+    this.editingPorts = []
+    this.editingPortNames = []
+    this.frmPort.reset()
   }
 
   powerDraw(member) {
@@ -323,7 +330,7 @@ export class DashboardComponent implements OnInit {
   /////           Ports Status
   //////////////////////////////////////////////////////////////////////////////
 
-  _getPortStatus(): void {
+  private getPortStatus(): void {
     this._http.post<any>('/api/devices/portstatus/', {
       host: this.host,
       cookies: this.cookies,
@@ -352,33 +359,33 @@ export class DashboardComponent implements OnInit {
 
   selectPort(port): void {
     if (this.editingPorts.includes(port)) {
-      this._deletePort(port);
+      this.deletePort(port);
       if (this.editingPorts.length == 1) {
-        this._setPortFields(this.editingPorts[0])
+        this.setPortFields(this.editingPorts[0])
       }
     }
     else {
-      this._addPort(port);
+      this.addPort(port);
       if (this.editingPorts.length == 1) {
-        this._setPortFields(this.editingPorts[0])
+        this.setPortFields(this.editingPorts[0])
       } else if (this.editingPorts.length == 2) {
-        this._setDefaultPortFielts()
+        this.setDefaultPortFielts()
       }
     }
   }
 
   // ADD or REMOVE ports from the editing list
-  _addPort(port): void {
+  private addPort(port): void {
     this.editingPorts.push(port);
     this.editingPortNames.push(port.port)
   }
-  _deletePort(port): void {
+  private deletePort(port): void {
     let index = this.editingPorts.indexOf(port)
     this.editingPorts.splice(index, 1)
     let indexName = this.editingPortNames.indexOf(port.port)
     this.editingPortNames.splice(indexName, 1)
     if (this.editingPorts.length == 0) {
-      this._discardPorts()
+      this.discardPorts()
     }
   }
 
@@ -421,7 +428,7 @@ export class DashboardComponent implements OnInit {
         next: data => {
           this.topBarLoading = false
           //this.updateFrmDeviceValues(data.result)
-          this._getDeviceSettings()
+          this.getDeviceSettings()
           this.openSnackBar("Device " + this.editingDevice.mac + " successfully updated", "Done")
         },
         error: error => {
@@ -433,18 +440,13 @@ export class DashboardComponent implements OnInit {
       })
     }
   }
-  // Reset the ports selection and form
-  _discardPorts(): void {
-    this.editingPorts = []
-    this.editingPortNames = []
-    this.frmPort.reset()
-  }
 
   // Set Port Form values
-  _setDefaultPortFielts(): void {
+  private setDefaultPortFielts(): void {
     this.updateFrmDeviceValues(this.defaultConfig)
   }
-  _setPortFields(port): void {
+
+  private setPortFields(port): void {
     var port_usage = ""
     // copy default values
     var config = { ...this.defaultConfig }

@@ -21,5 +21,6 @@ urlpatterns = [
     path(r'', include("frontend.urls"), name="index"),
     path(r'api/', include("backend.urls"), name="api"),
     path(r'login/', views.index, name="redir_index"),
+    path(r'select/', views.index, name="redir_index"),
     path(r'dashboard/', views.index, name="redir_index"),
 ]

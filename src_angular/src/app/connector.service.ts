@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 export class ConnectorService {
   private headersSource = new BehaviorSubject({});
   private cookiesSource = new BehaviorSubject({});
-  private hostSource = new BehaviorSubject('');
+  private hostSource = new BehaviorSubject("");
   private selfSource = new BehaviorSubject({});
   private orgIdSource = new BehaviorSubject("");
   private siteIdSource = new BehaviorSubject("");
@@ -23,7 +23,7 @@ export class ConnectorService {
   orgMode = this.orgModeSource.asObservable();
   google_api_key = this.googleApiKey.asObservable();
 
-  constructor() { }
+  constructor() {}
 
   headersSet(data: {}) {
     this.headersSource.next(data)

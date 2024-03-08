@@ -19,6 +19,7 @@ export class OrgComponent implements OnInit {
   self = {};
   search = "";
   orgs = [];
+  org_sites = {};
   sites = [];
   orgMode: boolean = false;
   selected_org_obj = {
@@ -48,30 +49,38 @@ export class OrgComponent implements OnInit {
 
 
   ngOnInit() {
-    this._appService.headers.subscribe(headers => this.headers = headers)
-    this._appService.cookies.subscribe(cookies => this.cookies = cookies)
-    this._appService.host.subscribe(host => this.host = host)
-    this._appService.self.subscribe(self => this.self = self || {})
-    this._appService.org_id.subscribe(org_id => this.org_id = org_id)
-    this.me = this.self["email"] || null
 
-    var tmp_orgs: string[] = []
+    this._appService.headers.subscribe(headers => this.headers = headers);
+    this._appService.cookies.subscribe(cookies => this.cookies = cookies);
+    this._appService.host.subscribe(host => this.host = host);
+    this._appService.self.subscribe(self => this.self = self || {});
+    this._appService.org_id.subscribe(org_id => this.org_id = org_id);
+    this.me = this.self["email"] || null;
+    this.check_auth_status();
+    var tmp_orgs: string[] = [];
 
     // parsing all the orgs/sites from the privileges
     // only orgs with admin/write/installer roles are used
     if (Object.keys(this.self).length > 0 && this.self["privileges"]) {
       this.self["privileges"].forEach(element => {
-        if (element["role"] == "admin" || element["role"] == "write") {
+        const org_id:string = element["org_id"];
+        const role:string = element["role"];
+
+        if (role == "admin" || role == "write") {
+
           if (element["scope"] == "org") {
-            if (tmp_orgs.indexOf(element["org_id"]) < 0) {
-              this.orgs.push({ id: element["org_id"], name: element["name"], role: element["role"] })
-              tmp_orgs.push(element["org_id"])
+            if (tmp_orgs.indexOf(org_id) < 0) {
+              this.orgs.push({ id: org_id, name: element["name"], role: role })
+              tmp_orgs.push(org_id)
             }
+            
           } else if (element["scope"] == "site") {
-            if (tmp_orgs.indexOf(element["org_id"]) < 0) {
-              this.orgs.push({ id: element["org_id"], name: element["org_name"], role: element["role"] })
-              tmp_orgs.push(element["org_id"])
-            }
+            const site_id = element["site_id"]
+            if (tmp_orgs.indexOf(org_id) < 0) {
+              this.orgs.push({ id: org_id, name: element["org_name"], role: role })
+              tmp_orgs.push(org_id)
+              this.org_sites[org_id] = [site_id]
+            } else if (!this.org_sites[org_id].sites.includes(site_id)) {this.org_sites[org_id].push(site_id)}
           }
         }
       });
@@ -94,16 +103,43 @@ export class OrgComponent implements OnInit {
     }
   }
 
+  private check_auth_status(){"api.mist.com"
+    if (Object.keys(this.self).length == 0){
+      this._router.navigate(['/login']);
+    }
+  }
+
   // when the user selects a new org
   // disabling the admin mode
   // and loading the sites
   changeOrg() {
-    this.loadSites();
+    this.org_id = this.selected_org_obj.id
+    if (this.org_sites.hasOwnProperty(this.org_id)) this.loadSiteList();
+    else this.loadSites();
   }
 
-  // loads the org sites
-  loadSites() {
-    this.org_id = this.selected_org_obj.id
+
+  // loads the org sites for site privilege
+  private loadSiteList() {
+    this.topBarLoading = true;
+    this.claimDisabled = true;
+    this.sites = [];
+    const site_ids = this.org_sites[this.org_id];
+    this._http.post<any>('/api/sites/', { host: this.host, cookies: this.cookies, headers: this.headers, org_id: this.org_id, site_ids:site_ids}).subscribe({
+      next: data => this.parseSites(data),
+      error: error => {
+        var message: string = "There was an error... "
+        if ("error" in error) {
+          message += error["error"]["message"]
+        }
+        this.topBarLoading = false;
+        this.openError(message)
+      }
+    })
+  }
+
+  // loads the org sites for org privilege
+  private loadSites() {
     this.topBarLoading = true;
     this.claimDisabled = true;
     this.sites = [];
@@ -121,7 +157,7 @@ export class OrgComponent implements OnInit {
   }
 
   // parse the org sites from HTTP response
-  parseSites(data) {
+  private parseSites(data) {
     if (data.sites.length > 0) {
       this.noSiteToDisplay = false;
       this.sites = this.sortList(data.sites, "name");
@@ -161,7 +197,7 @@ export class OrgComponent implements OnInit {
 
 
   // COMMON
-  sortList(data, attribute) {
+  private sortList(data, attribute) {
     return data.sort(function (a, b) {
       var nameA = a[attribute].toUpperCase(); // ignore upper and lowercase
       var nameB = b[attribute].toUpperCase(); // ignore upper and lowercase

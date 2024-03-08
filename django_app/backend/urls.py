@@ -15,4 +15,3 @@ urlpatterns = [
     path('disclaimer', views.disclaimer, name="disclaimer"),
     path('hosts', views.hosts, name="hosts")
 ]
-

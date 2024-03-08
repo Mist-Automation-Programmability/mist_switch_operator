@@ -17,3 +17,10 @@ export class MapToArrayPipe implements PipeTransform {
         return arr;
     }
 }
+
+@Pipe({ name: 'includes' })
+export class IncludesPipe implements PipeTransform {
+    transform(fullText: string, textMatch: string): boolean {
+        return fullText.includes(textMatch);
+    }
+}

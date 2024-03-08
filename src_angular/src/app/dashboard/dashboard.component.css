@@ -1,3 +1,22 @@
+.sidenav-container {
+    width: 23em;
+    min-width: 23em;
+    flex-direction: column;
+    box-sizing: border-box;
+    display: flex;
+    place-content: stretch space-between;
+    align-items: stretch;
+    max-width: 100%;
+}
+
+.sidenav {
+    background-color: #ececec;
+    border: none !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 .max90vh {
     height: calc(100vh - 80px);
 }
@@ -55,7 +74,6 @@
     color: black;
 }
 
-
 /* Structure */
 
 tr.mat-row,
@@ -109,7 +127,6 @@ table {
     cursor: default;
 }
 
-
 /* Column Widths */
 
 .mat-column-action {
@@ -145,7 +162,6 @@ div.selectable.selected {
     margin: 1em 0 -1em;
 }
 
-
 /* SWITCH */
 
 .switch {
@@ -157,7 +173,6 @@ div.selectable.selected {
     min-width: 930px;
     max-width: 1000px;
 }
-
 
 /* PORTS */
 
@@ -197,18 +212,26 @@ span.port-text {
 
 .selected-port {
     border: solid 1px black;
-    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.5),
+    0px 4px 5px 0px rgba(0, 0, 0, 0.4), 0px 1px 10px 0px rgba(0, 0, 0, 0.2);
     transition: box-shadow background-color 250ms ease-in-out;
 }
-
 
 /* MAT CHECKBOX EXPANDED */
 
 mat-checkbox.expand-checkbox {
-    margin: -0.5em
+    margin: -0.5em;
+    width: 100%;
+    .mdc-label {
+
+    display: flex;
+    height: 3em;
+    align-items: center;
+    width: 15em;
+    }
 }
 
-::ng-deep mat-checkbox.expand-checkbox .mat-checkbox-layout {
+::ng-deep mat-checkbox.expand-checkbox .mat-internal-form-field {
     width: 100%;
 }
 
@@ -221,6 +244,31 @@ mat-checkbox.expand-checkbox {
     margin: 0.5em 0 0.5em 0;
 }
 
+.filter-nav {
+    mat-form-field {
+        height: 4.5em; 
+    }
+    margin-left: 1em; margin-bottom: 1em;
+    .mat-mdc-text-field-wrapper {
+        background-color: rgb(236 236 236) !important;
+    }
+
+    .mat-mdc-form-field-subscript-wrapper {
+        height: 1em;
+    }
+}
+.filter {
+        height: 4.5em; 
+    
+    margin-left: 1em; margin-bottom: 1em;
+    .mat-mdc-text-field-wrapper {
+        background-color: white !important;
+    }
+
+    .mat-mdc-form-field-subscript-wrapper {
+        height: 1em;
+    }
+}
 
 /* MEMBER DETAILS */
 

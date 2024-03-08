@@ -1,11 +1,13 @@
-<mat-sidenav style="width:23em; min-width: 23em;place-content: stretch space-between;align-items: stretch;" class="flex column max90vh">
-    <div>
+<div style="flex-direction: row;box-sizing: border-box;display: flex;visibility: visible!important;">
+<mat-drawer-container class="sidenav-container">
+    <mat-drawer mode="side" opened class="sidenav">
+    <div style="display: flex;flex-direction: column;justify-content: space-between;height: 100%;">
         <div  class="flex column psk-table-container">
-            <table mat-table [dataSource]="filteredDevicesDatabase" style="background: none;">
+            <table mat-table [dataSource]="filteredDevicesDatabase" style="background: none; margin-bottom: 1em;">
                 <ng-container matColumnDef="device">
                     <th mat-header-cell *matHeaderCellDef class="flex column" style="padding-right: 0; padding-left: 0;place-content: stretch space-between;align-items: stretch;">
-                        <div class="flex row" style="margin-left: 24px;">
-                            <mat-form-field>
+                        <div class="flex row filter-nav">
+                            <mat-form-field style="width: 90%;" color="accent">
                                 <mat-label>Filter</mat-label>
                                 <input matInput (keyup)="applyFilter($event)" placeholder="Ex. switch name" #input>
                             </mat-form-field>
@@ -43,14 +45,15 @@
             </table>
             <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" style="background:  none;"></mat-paginator>
         </div>
-    </div>
     <div class="flex row" style="margin: 1em;place-content: center flex-start;align-items: stretch;">
         <button mat-raised-button color="accent" (click)="back()">Back</button>
     </div>
-</mat-sidenav>
+    </div>
+</mat-drawer>
+</mat-drawer-container>
 
 
-<mat-card fxFlex class="flex column mat-elevation-z24 max90vh" style="margin:0 1em; padding: 0;place-content: stretch center;align-items: stretch;">
+<mat-card class="flex column mat-elevation-z24 max90vh" style="margin:0 1em; padding: 0;place-content: stretch center;align-items: stretch; flex:auto;">
     <div *ngIf="!editingDevice && !deviceLoading" style="text-align: center;font-size: large;color: gray;">
         Please select a device...
     </div>
@@ -61,7 +64,7 @@
 
     <div *ngIf="editingDevice && !deviceLoading" fxFlex class="flex row" style="height: 100%;">
         <div matColumnDef="ports" class="flex column">
-            <mat-form-field style="margin-left: 1em;">
+            <mat-form-field class="filter" color="accent">
                 <mat-label>Filter</mat-label>
                 <input matInput (keyup)="applyPortFilter($event)" placeholder="Ex. switch name" #input>
             </mat-form-field>
@@ -69,8 +72,8 @@
                 <div *ngFor="let switchport of displayedPorts | mapToArray" [ngClass]="{'selected': canbeChecked(switchport.value.port)}" class="selectable">
                     <a role="button" class="device" class="flex row" style="cursor: pointer;place-content: stretch space-between;align-items: stretch;">
                         <div class="flex row" style="font-weight: lighter;padding: 0.5em;border-bottom: solid 1px lightgray;width: 100%;">
-                            <mat-checkbox fxFill [checked]="canbeChecked(switchport.value.port)" (change)="selectPort(switchport.value)" class="expand-checkbox">
-                                {{switchport.key}}
+                            <mat-checkbox [checked]="canbeChecked(switchport.value.port)" (change)="selectPort(switchport.value)" class="expand-checkbox">
+                                    {{switchport.key}}
                             </mat-checkbox>
                         </div>
                     </a>
@@ -83,28 +86,41 @@
             <div mat-dialog-content class="flex column" style="place-content: center space-around;align-items: center;">
                 <div *ngFor='let member of editingDeviceSettings.members; let index = index' style="margin-bottom: 0em;">
                     <div class="flex column switch" style="place-content: flex-start;align-items: flex-start;">
-                        <div style="font-weight: lighter;">
-                            {{editingDevice.model}}
+                        <div style="font-weight: lighter;" class="flex row">
+                            <div>
+                                {{editingDevice.model}}
+                            </div>
+                            <div style="margin-left: 5em;">
+                                ID {{index}}</div>
                         </div>
                         <div class="flex row" style="place-content: stretch flex-start;align-items: stretch;">
-                            <div style="font-weight: lighter; font-size: larger; height: 100%;place-content: center;align-items: center;">
-                                {{index}}</div>
                             <div class="ports-container">
                                 <div class="flex row ports-text" style="place-content: center;align-items: center;flex: 1 1 100%;max-height: 100%;">
-                                    <span style="width: 60px;height: 20px;text-align: center;">RJ45</span>
+                                    <span style="width: 60px;height: 20px;text-align: center;">PIC0</span>
                                 </div>
+
                                 <div *ngFor='let port of member.ports' style="cursor: pointer; z-index: 10;">
-                                    <div *ngIf='port | startsWith: "ge"'>
+                                    <div *ngIf='port | includes: "/0/"'>
                                         <div [matTooltip]="port" class="normal-port" (click)="selectPortFromSwitchView(port)" [ngClass]="{'port-up': editingPortsStatus[port].up, 'selected-port': editingPortNames.includes(port)}">
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="flex row ports-text"  style="place-content: center;align-items: center;flex: 1 1 100%;max-height: 100%;">
-                                    <span style="width: 60px;height: 20px;text-align: center;">SFP</span>
+                                    <span style="width: 60px;height: 20px;text-align: center;">PIC1</span>
                                 </div>
                                 <div *ngFor='let port of member.ports' style="cursor: pointer; z-index: 10;">
-                                    <div *ngIf='port | startsWith: "xe"'>
+                                    <div *ngIf='port | includes: "/1/"'>
+                                        <div [matTooltip]="port" class="normal-port" (click)="selectPortFromSwitchView(port)" [ngClass]="{'port-up': editingPortsStatus[port] && editingPortsStatus[port].up, 'selected-port': editingPortNames.includes(port)}">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex row ports-text"  style="place-content: center;align-items: center;flex: 1 1 100%;max-height: 100%;">
+                                    <span style="width: 60px;height: 20px;text-align: center;">PIC2</span>
+                                </div>
+                                <div *ngFor='let port of member.ports' style="cursor: pointer; z-index: 10;">
+                                    <div *ngIf='port | includes: "/2/"'>
                                         <div [matTooltip]="port" class="normal-port" (click)="selectPortFromSwitchView(port)" [ngClass]="{'port-up': editingPortsStatus[port] && editingPortsStatus[port].up, 'selected-port': editingPortNames.includes(port)}">
                                         </div>
                                     </div>
@@ -306,9 +322,10 @@
                 </form>
             </div>
             <div mat-dialog-actions style="justify-content: space-around;" class="flex row" *ngIf="editingPorts.length >= 1">
-                <button mat-raised-button (click)="discardDevice()">Close</button>
+                <button mat-raised-button (click)="discardPorts()">Close</button>
                 <button mat-raised-button color="accent" (click)="savePorts()" [disabled]="frmPort.invalid">Update</button>
             </div>
         </div>
     </div>
 </mat-card>
+</div>
