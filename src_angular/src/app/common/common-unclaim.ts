@@ -1,12 +1,12 @@
 import { Component, Inject } from '@angular/core';
-import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 export interface DeviceElement {
     mac: string;
     model: string;
     serial: string;
     connected: boolean;
-    type: string;  
+    type: string;
     deviceprofile_name: string;
     height: Int16Array;
     map_id: string;
@@ -14,9 +14,9 @@ export interface DeviceElement {
     orientation: Int16Array;
     site_id: string;
     site_name: string;
-    x:Int16Array;
+    x: Int16Array;
     y: Int16Array;
-  }
+}
 
 @Component({
     selector: 'common-unclaim',

@@ -2,6 +2,7 @@
     background-color: unset;
     max-width: 1900px;
     margin: auto;
+    padding: 16px;
 }
 
 .top-bar-container {
@@ -37,4 +38,22 @@
     display: flex;
     width: 300px;
     justify-content: space-between;
+}
+
+.container-sites {
+    flex-flow: row wrap;
+    box-sizing: border-box;
+    place-content: stretch flex-start;
+    align-items: stretch;
+    max-height: 100%;
+}
+
+.card-site {
+    cursor: pointer;
+    margin: 10px;
+    padding: 0px;
+    width: 300px;
+    place-content: stretch space-between;
+    max-width: 100%;
+    align-items: stretch;
 }

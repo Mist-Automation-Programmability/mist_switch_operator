@@ -120,6 +120,7 @@
   "cli": {
     "schematicCollections": [
       "@nativescript/schematics"
-    ]
+    ],
+    "analytics": false
   }
 }

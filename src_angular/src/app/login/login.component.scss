@@ -2,11 +2,17 @@ mat-card {
     background-color: rgb(236 236 236);
 }
 
+h3 {
+    font-weight: 400;
+    margin-bottom: 0;
+    margin-top: 0;
+
+}
+
 .login-form-inner {
-    font-weight: 600;
     border: none;
     width: auto;
-    min-width: 50em;
+    min-width: 38em;
     position: relative;
     margin: auto;
     padding: 2em;
@@ -20,7 +26,7 @@ mat-card {
 
 .login-form-inputs {
     padding: 10px;
-    width: 25em;
+    width: 17em;
     text-align: center;
     justify-content: space-between;
 }
@@ -52,6 +58,7 @@ mat-card {
     height: 100%;
     background-color: #ffffff9c;
     border-radius: 5px;
+    backdrop-filter: blur(2px);
 }
 
 .loading div {
@@ -64,14 +71,13 @@ mat-card {
     text-align: center;
     margin: 5em auto;
     text-transform: uppercase;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
     font-weight: 100;
-    font-size: smaller;
+    font-size: small;
+    line-height: 150%;
+    opacity: 50%;
 }
 
 .source {
-    display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
 }

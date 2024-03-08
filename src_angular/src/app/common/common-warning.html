@@ -7,14 +7,14 @@
             <li *ngFor="let element of data.vlan_check">{{element.reason}}</li>
         </ul>
     </div>
-    <div fxLayout="column" *ngIf="data.bigWarning == true" style="color: red;justify-content: center;margin: 2em 0 0;">
+    <div class="flex column" *ngIf="data.bigWarning == true" style="color: red;justify-content: center;margin: 2em 0 0;">
         <div style="font-weight: bold; margin: auto;">Warning:</div>
         <div style="margin: auto;">Changes may have impact on existing users, especially for users using PSK without VLAN.
         </div>
     </div>
 </div>
 
-<div mat-dialog-actions style="justify-content: space-around;" fxLayout="row">
+<div mat-dialog-actions style="justify-content: space-around;" class="flex row">
     <button mat-raised-button (click)="cancel()">I Don't Care</button>
     <button mat-button color="accent" (click)="ok()">Fix It</button>
 </div>

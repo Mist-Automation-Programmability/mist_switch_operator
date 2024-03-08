@@ -1,6 +1,6 @@
 <mat-card class="card-outer">
-    <div fxLayout="column" class="top-bar-container">
-        <div fxLayout="row wrap" class="top-bar  mat-elevation-z8">
+    <div class="flex column top-bar-container">
+        <div style="flex-flow: row wrap;" class="top-bar  mat-elevation-z8">
             <mat-form-field appearance="outline" class="list">
                 <mat-label>Organization</mat-label>
                 <mat-select [(value)]="selected_org_obj" (selectionChange)="changeOrg()">
@@ -20,22 +20,22 @@
         <mat-progress-bar mode="indeterminate" color="accent" *ngIf="topBarLoading == true"></mat-progress-bar>
     </div>
     <div>
-        <mat-card *ngIf="!org_id" fxLayoutAlign="center">
+        <mat-card *ngIf="!org_id"  style="place-content: stretch center;align-items: center;padding: 16px;">
             <span style="color:#777">
                 Please Select an Organization
             </span>
         </mat-card>
-        <mat-card *ngIf="noSiteToDisplay" fxLayout="column" fxLayoutAlign="center stretch">
-            <div style="color:#777; margin: 2em auto;" fxLayoutAlign="center stretch">
+        <mat-card *ngIf="noSiteToDisplay" class="flex column" style="justify-content: center; max-width: 100%;">
+            <div style="color:#777; margin: 2em auto;" style="justify-content: center; max-width: 100%;">
                 You don't have access to any Site in this Organization. Please chose another Organization.
             </div>
-            <div style="color: #777; font-size: small; margin-bottom: 2em;" fxLayoutAlign="center stretch">
+            <div style="color: #777; font-size: small; margin-bottom: 2em;" style="justify-content: center; max-width: 100%;">
                 Only the Sites with "Administrator" authorization are listed.
             </div>
         </mat-card>
     </div>
-    <div fxLayout="row wrap" fxLayoutAlign="start stretch">
-        <mat-card *ngFor="let site of sites" class="mat-elevation-z2" fxLayout="column" fxLayoutAlign="space-between stretch" style="cursor: pointer;margin: 10px; padding: 0px; width: 300px;">
+    <div class="flex row container-sites">
+        <mat-card *ngFor="let site of sites" class="mat-elevation-z2 flex column card-site" >
             <div (click)="setSite(site)">
                 <mat-card-title style="margin:10px">
                     {{site.name}}
@@ -45,7 +45,7 @@
                 </mat-card-subtitle>
             </div>
             <div (click)="setSite(site)">
-                <mat-card-content style="margin: 0px">
+                <mat-card-content style="margin: 0; padding: 0;">
                     <google-map [center]="site.latlng" [zoom]="map.zoom" height="300px" width="300px" [options]="map.options">
                         <map-marker [position]="site.latlng"></map-marker>
                         <map-info-window>Test</map-info-window>
