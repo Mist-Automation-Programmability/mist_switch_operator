@@ -204,10 +204,21 @@ span.port-text {
     margin: 2px 3px;
     border: 1px solid transparent;
     box-shadow: none;
+    border: 1px solid #6f9d2b;
+}
+.normal-port.disabled {
+    cursor: default;
+    border: 1px solid #a221216b;
+    border-radius: 5px;
+    position: relative;
 }
 
 .port-up {
     background-color: #6f9d2b;
+}
+.normal-port.port-up.disabled {
+    background: #a221216b;
+
 }
 
 .selected-port {
@@ -228,6 +239,7 @@ mat-checkbox.expand-checkbox {
     height: 3em;
     align-items: center;
     width: 15em;
+    line-height: 40px;
     }
 }
 

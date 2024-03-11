@@ -182,16 +182,20 @@ export class DashboardComponent implements OnInit {
 
   editingDevice = null;
   editingDeviceSettings = null;
-  editingPorts = [];
+  selectedPorts = [];
   editingPortNames = [];
-  editingPortsStatus = {}
-  displayedPorts = {}
-
+  editingPortsStatus = {};
+  displayedPorts = {};
+  availablePorts = [];
+  readonlyPorts = [];
+  
   filteredDevicesDatabase: MatTableDataSource<DeviceElement> | null;
+  selectedPortsStats: MatTableDataSource<DeviceElement> | null;
   devices: DeviceElement[] = []
 
   resultsLength = 0;
   displayedColumns: string[] = ["device"];
+  displayedStatsColumns: string[] = ['port_id', 'up', 'media_type', 'neighbor_system_name', 'neighbor_mac', 'neighbor_port_desc'];
   private _subscription: Subscription
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -203,7 +207,7 @@ export class DashboardComponent implements OnInit {
   //////////////////////////////////////////////////////////////////////////////
 
   ngOnInit() {
-    const source = interval(60000);
+    const source = interval(180000);
 
     this._appService.headers.subscribe(headers => this.headers = headers)
     this._appService.cookies.subscribe(cookies => this.cookies = cookies)
@@ -241,7 +245,6 @@ export class DashboardComponent implements OnInit {
       this.topBarLoading = true;
       this._http.post<DeviceElement[]>('/api/devices/', body).subscribe({
         next: data => {
-          var tmp: DeviceElement[] = []
           data["results"].forEach(element => {
             if (this.editingDevice && this.editingDevice.mac == element.mac) {
               this.editingDevice = element;
@@ -287,13 +290,11 @@ export class DashboardComponent implements OnInit {
       device_id: this.editingDevice.id
     }).subscribe({
       next: data => {
-        this.editingDeviceSettings = data
-        this.displayedPorts = data.ports
-        this.deviceLoading = false
-        this.editingPorts = []
-        this.editingPortNames.forEach(element => {
-          this.editingPorts.push(this.editingDeviceSettings.ports[element])
-        })
+        this.editingDeviceSettings = data;
+        this.displayedPorts = data.ports;
+        this.deviceLoading = false;
+        this.selectedPorts = [];
+        this.correlate_ports();
       },
       error: error => {
         this.deviceLoading = false
@@ -308,7 +309,7 @@ export class DashboardComponent implements OnInit {
   discardDevice(): void {
     this.editingDevice = null;
     this.editingDeviceSettings = null;
-    this.editingPorts = [];
+    this.selectedPorts = [];
     this.editingPortNames = [];
     this.displayedPorts = {};
     this.discardPorts();
@@ -316,7 +317,7 @@ export class DashboardComponent implements OnInit {
 
   // Reset the ports selection and form
   private discardPorts(): void {
-    this.editingPorts = []
+    this.selectedPorts = []
     this.editingPortNames = []
     this.frmPort.reset()
   }
@@ -324,6 +325,74 @@ export class DashboardComponent implements OnInit {
   powerDraw(member) {
     var percentage = (member.poe.power_draw / member.poe.max_power) * 100
     return percentage
+  }
+
+
+  private sort_available_ports(): void {
+    this.availablePorts.sort((port_a, port_b) => {
+      if (port_a.includes("-")) port_a = port_a.split("-")[1]
+      if (port_b.includes("-")) port_b = port_b.split("-")[1]
+      if (!port_a < port_b) {
+        return -1
+      } else if (port_a > port_b) {
+        return 1
+      }
+      return 0
+    })
+  }
+
+  private mark_readonly_ports(): void {
+    this.availablePorts.forEach(port => {
+      if (port in this.displayedPorts) {
+        if (Object.keys(this.displayedPorts[port].device).length > 0) {
+          if (this.displayedPorts[port].device.hasOwnProperty("no_local_overwrite") && this.displayedPorts[port].device.no_local_overwrite == true) this.readonlyPorts.push(port);
+        } else if (this.displayedPorts[port].device.hasOwnProperty("no_local_overwrite") && this.displayedPorts[port].device.no_local_overwrite == true) this.readonlyPorts.push(port);
+      }
+    })
+  }
+
+  private mark_available_ports(interface_mapping: {}): void {
+    this.availablePorts = [];
+    this.readonlyPorts = [];
+    this.editingDeviceSettings["members"].forEach(member => {
+      for (var i = 0; i < member.ports.length; i++) {
+        var port = member.ports[i];
+        if (member.ports[i].includes("-") && interface_mapping.hasOwnProperty(member.ports[i].split("-")[1])) {
+          port = interface_mapping[member.ports[i].split("-")[1]];
+        }
+        member.ports[i] = port;
+        if (port.indexOf("vcp") < 0) {
+          this.availablePorts.push(port);
+        } else {
+          this.readonlyPorts.push(port);
+        }
+        if (!this.editingDeviceSettings.ports.hasOwnProperty(port)) {
+          this.editingDeviceSettings.ports[port] = {
+            "port": port,
+            "site": {},
+            "device": {}
+          }
+        }
+      }
+    })
+  }
+
+  private correlate_ports(): void {
+    if (Object.keys(this.displayedPorts).length > 0 && Object.keys(this.editingPortsStatus).length > 0) {
+      //example { "0/0/0": "ge-0/0/0", "0/0/1": "xe-0/0/1"}
+      var interface_mapping = {};
+      Object.keys(this.editingPortsStatus).forEach(status_port => {
+        if (status_port.includes("-")) {
+          interface_mapping[status_port.split("-")[1]] = status_port;
+        }
+      })
+      this.mark_available_ports(interface_mapping);
+      this.mark_readonly_ports();
+      this.sort_available_ports();
+      this.editingPortNames.forEach(element => {
+        this.selectedPorts.push(this.editingDeviceSettings.ports[element])
+      })
+    }
   }
 
   //////////////////////////////////////////////////////////////////////////////
@@ -339,7 +408,8 @@ export class DashboardComponent implements OnInit {
       device_mac: this.editingDevice.mac
     }).subscribe({
       next: data => {
-        this.editingPortsStatus = data.result
+        this.editingPortsStatus = data.result;
+        this.correlate_ports();
       },
       error: error => {
         this.deviceLoading = false
@@ -349,48 +419,72 @@ export class DashboardComponent implements OnInit {
       }
     })
   }
+
+  display_status(port: string): boolean {
+    if (port.includes("-")) {
+      port = port.split("-")[1];
+    }
+    for (let [interface_name, value] of Object.entries(this.editingPortsStatus)) {
+      if (interface_name.includes("-")) {
+        interface_name = interface_name.split("-")[1];
+      }
+      if (port == interface_name && value.hasOwnProperty("up")) {
+        return value["up"];
+      }
+    }
+    return false;
+  }
+
+  display_pic(member, pic_number: number): boolean {
+    return member.ports.filter(port => port.includes('/' + pic_number + '/')).length > 0
+  }
   //////////////////////////////////////////////////////////////////////////////
   /////           EDIT Port
   //////////////////////////////////////////////////////////////////////////////
-  selectPortFromSwitchView(portName): void {
-    let port = this.editingDeviceSettings.ports[portName]
-    this.selectPort(port)
-  }
-
-  selectPort(port): void {
-    if (this.editingPorts.includes(port)) {
+  selectPort(portName): void {
+    let port = this.editingDeviceSettings.ports[portName];
+    if (this.selectedPorts.includes(port)) {
       this.deletePort(port);
-      if (this.editingPorts.length == 1) {
-        this.setPortFields(this.editingPorts[0])
+      if (this.selectedPorts.length == 1) {
+        this.setPortFields(this.selectedPorts[0])
       }
     }
     else {
       this.addPort(port);
-      if (this.editingPorts.length == 1) {
-        this.setPortFields(this.editingPorts[0])
-      } else if (this.editingPorts.length == 2) {
-        this.setDefaultPortFielts()
+      if (this.selectedPorts.length == 1) {
+        this.setPortFields(this.selectedPorts[0]);
+      } else if (this.selectedPorts.length == 2) {
+        this.setDefaultPortFielts();
       }
     }
+    this.updateSelectedPortsStatus();
   }
 
+  private updateSelectedPortsStatus():void{
+    let tmp = [];    
+    this.editingPortNames.forEach(port => {
+      if (this.editingPortsStatus.hasOwnProperty(port)) tmp.push(this.editingPortsStatus[port])
+      else tmp.push({port_id: port, up: false, media_type: "", neighbor_system_name: "", neighbor_mac: "", neighbor_port_desc: ""})
+    })
+    this.selectedPortsStats = new MatTableDataSource(tmp);
+  }
   // ADD or REMOVE ports from the editing list
   private addPort(port): void {
-    this.editingPorts.push(port);
-    this.editingPortNames.push(port.port)
+    this.selectedPorts.push(port);
+    this.editingPortNames.push(port.port);
   }
   private deletePort(port): void {
-    let index = this.editingPorts.indexOf(port)
-    this.editingPorts.splice(index, 1)
+    let index = this.selectedPorts.indexOf(port)
+    this.selectedPorts.splice(index, 1)
     let indexName = this.editingPortNames.indexOf(port.port)
     this.editingPortNames.splice(indexName, 1)
-    if (this.editingPorts.length == 0) {
+    if (this.selectedPorts.length == 0) {
       this.discardPorts()
     }
   }
 
   savePorts(): void {
-    this.editingPorts.forEach(element => {
+    this.selectedPorts.forEach(element => {
       element["new_conf"] = {
         "mode": this.frmPort.get("mode").value,
         "all_networks": this.frmPort.get("all_networks").value,
@@ -421,7 +515,7 @@ export class DashboardComponent implements OnInit {
         headers: this.headers,
         site_id: this.site_id,
         org_id: this.org_id,
-        port_config: this.editingPorts,
+        port_config: this.selectedPorts,
         device_id: this.editingDevice.id
       }
       this._http.post<any>('/api/devices/update/', body).subscribe({
@@ -480,6 +574,15 @@ export class DashboardComponent implements OnInit {
   //////////////////////////////////////////////////////////////////////////////
   /////           COMMON
   //////////////////////////////////////////////////////////////////////////////
+  port_tooltip(portName:string): string {
+    let port = this.editingDeviceSettings.ports[portName];
+    let toolip = portName;
+    if (this.readonlyPorts.includes(portName)){
+      toolip += " (readonly)";
+    }
+    return toolip;
+  }
+
   updateFrmDeviceValues(config: PortElement): void {
     this.frmPort.reset()
     this.frmPort.controls["port_network"].setValue(config.port_network)

@@ -39,7 +39,7 @@ class Devices(Common):
             logging.info(f"Site:{site_id}:Devices: Done")
             return self._get_devices_vc(extract, body["site_id"], results)
         except:
-            if retry: 
+            if retry:
                 logging.error(f"Site:{site_id}:Devices: Error")
                 return {"status": 500, "data": {"message": "Unable to retrieve the inventory"}}
             else:
@@ -50,6 +50,7 @@ class Devices(Common):
         data = []
         for device in devices:
             device_id = f"00000000-0000-0000-1000-{device['mac']}"
+            disable_auto_config = device.get("disable_auto_config", False)
             try:
                 logging.info(f"Device:{site_id}:VC: In Process")
                 url = f"https://{extract['host']}/api/v1/sites/{site_id}/devices/{device_id}/vc"
@@ -57,6 +58,7 @@ class Devices(Common):
                     url, headers=extract["headers"], cookies=extract["cookies"])
                 tmp = resp.json()
                 tmp["name"] = device["name"]
+                tmp["disable_auto_config"] = disable_auto_config
                 logging.info(f"Device:{device_id}:VC: Done")
                 data.append(tmp)
             except:
@@ -88,9 +90,8 @@ class Devices(Common):
             return {"status": 200, "data": {"members": data["members"], "networks": networks, "ports": data["ports"], "site": site_settings, "device": device_settings}}
 
     def _generate_networks(self, site_config, device_config):
-        networks = site_config["networks"] if "networks" in site_config else {}
-        device_networks = device_config["networks"] if "networks" in device_config else {
-        }
+        networks = site_config.get("networks", {})
+        device_networks = device_config.get("networks", {})
         for network in device_networks:
             networks[network] = device_networks[network]
         return networks
@@ -156,6 +157,7 @@ class Devices(Common):
             logging.info(f"Site:{site_id}:Settings: Done")
             return self._parse_site_template(body, site_setting)
         except:
+            print("Exception occurred", exc_info=True)
             if retry:
                 logging.error(f"Site:{site_id}:Settings: Error")
                 return {"status": 500, "data": {"message": "Unable to retrieve the site settings"}}
@@ -164,17 +166,15 @@ class Devices(Common):
                 return self._get_site_template(extract, body, True)
 
     def _parse_site_template(self, body, site_setting):
+        site_networks = site_setting.get("networks", {})
+        site_port_usages = site_setting.get("port_usages", {})
         if "switch_matching" in site_setting:
-            device_name = body["device_name"] if "device_name" in body else ""
-            device_role = body["device_role"] if "device_role" in body else ""
-            device_model = body["device_model"] if "device_model" in body else ""
+            device_name = body.get("device_name","")
+            device_role = body.get("device_role", "")
+            device_model = body.get("device_model", "")
             site_port_config = {}
-            site_networks = {}
-            site_port_usages = {}
-            if "enable" in site_setting["switch_matching"] and site_setting["switch_matching"]["enable"]:
-                rules = site_setting["switch_matching"]["rules"] if "rules" in site_setting["switch_matching"] else {}
-                site_networks = site_setting["networks"] if "networks" in site_setting else {}
-                site_port_usages = site_setting["port_usages"] if "port_usages" in site_setting else {}
+            if site_setting["switch_matching"].get("enable", False):
+                rules = site_setting["switch_matching"].get("rules", {})
 
                 for rule in rules:
                     match = True
@@ -197,7 +197,7 @@ class Devices(Common):
                         break
             return {"port_config": site_port_config, "networks": site_networks, "port_usages": site_port_usages}
         else:
-            return {"networks": {}, "port_usages": {}, "port_config": {}}
+            return {"networks": {},  "networks": site_networks, "port_usages": site_port_usages}
 
     def _generate_device_settings(self, device_settings, site_settings, device_stats, device_models):
         data = {
@@ -249,7 +249,6 @@ class Devices(Common):
                             int_type = "xe"
                         for int_num in range(i, int_count+i):
                             interface_name = f"{int_type}-{fpc}/{pic}/{int_num}"
-                            print(interface_name)
                             tmp["ports"].append(interface_name)
                             data["ports"][interface_name] = {
                                 "port": interface_name, "site": {}, "device": {}}
@@ -263,7 +262,6 @@ class Devices(Common):
             #     tmp["ports"].append(f"xe-{fpc}/1/{i}")
             #     data["ports"][f"xe-{fpc}/1/{i}"] = {
             #         "port": f"xe-{fpc}/1/{i}", "site": {}, "device": {}}
-            print(tmp)
             data["members"].append(tmp)
             fpc += 1
         data = self._translate_mist_conf(data, site_settings, "site")
@@ -272,18 +270,16 @@ class Devices(Common):
         return data
 
     def _translate_mist_conf(self, data, config, scope):
-        if "port_config" in config and config["port_config"]:
+        if config.get("port_config"):
             # for each port config (means ge-0/0/0) or ports range config (means ge-0-2/0-1/0-10)
             for port_config in config["port_config"]:
                 # if port config (means ge-0/0/0)
                 if re.match(r'^[a-z0-9]+-[0-9]+/[0-9]+/[0-9]+$', port_config):
-                    fpc = int(port_config.split("-", 1)[1].split("/")[0])
-                    if port_config in data["ports"]:
-                        data["ports"][port_config][scope] = config["port_config"][port_config]
-                    else:
+                    fpc = int(port_config.split("-")[1].split("/")[0])
+                    if not port_config in data["ports"]:
                         data["ports"][port_config] = {
                             "port": port_config, "site": {}, "device": {}}
-                        data["ports"][port_config][scope] = config["port_config"][port_config]
+                    data["ports"][port_config][scope] = config["port_config"][port_config]
 
                 # else, it's a ports range config (means ge-0-1/0-2/0-10)
                 else:
@@ -300,13 +296,11 @@ class Devices(Common):
                             for j in range(int(pic[0]), int(pic[-1])+1):
                                 for k in range(int(slot[0]), int(slot[-1])+1):
                                     interface = f"{port_type}-{i}/{j}/{k}".replace(" ", "")
-                                    if data["ports"].get(interface):
-                                        if interface in data["ports"]: 
-                                            data["ports"][interface][scope] = config["port_config"][port_config]
-                                        else:
-                                            data["ports"][interface] = {
-                                                "port": interface, "site": {}, "device": {}}
-                                            data["ports"][interface][scope] = config["port_config"][port_config]
+                                    if not interface in data["ports"]:
+                                        data["ports"][interface] = {
+                                            "port": interface, "site": {}, "device": {}}
+                                    data["ports"][interface][scope] = config["port_config"][port_config]
+
         return data
 
     #############
