@@ -23,8 +23,7 @@ export class ConnectorService {
   orgMode = this.orgModeSource.asObservable();
   google_api_key = this.googleApiKey.asObservable();
 
-  constructor() {
-  }
+  constructor() {}
 
   headersSet(data: {}) {
     this.headersSource.next(data)

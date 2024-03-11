@@ -75,6 +75,7 @@
                         <div class="flex row" style="font-weight: lighter;padding: 0.5em;border-bottom: solid 1px lightgray;width: 100%;">
                             <mat-checkbox [checked]="canbeChecked(switchport)" (change)="selectPort(switchport)" class="expand-checkbox" [disabled]="readonlyPorts.includes(switchport)">
                                 {{switchport}}
+                                <div *ngIf="lacpPorts.hasOwnProperty(switchport)" style="margin-left: 1em; color: gray"> (LACP)</div>
                             </mat-checkbox>
                         </div>
                     </a>

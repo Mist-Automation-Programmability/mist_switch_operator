@@ -172,6 +172,7 @@ div.selectable.selected {
     padding: 10px 20px;
     min-width: 930px;
     max-width: 1000px;
+    justify-content: space-around !important;
 }
 
 /* PORTS */
@@ -193,6 +194,7 @@ span.port-text {
     flex-direction: column;
     height: 60px;
     align-content: flex-start;
+    justify-content: center;
 }
 
 .normal-port {
@@ -211,13 +213,14 @@ span.port-text {
     border: 1px solid #a221216b;
     border-radius: 5px;
     position: relative;
+    background: #dddddd63;
 }
 
 .port-up {
     background-color: #6f9d2b;
 }
 .normal-port.port-up.disabled {
-    background: #a221216b;
+    background: #60111130;
 
 }
 
