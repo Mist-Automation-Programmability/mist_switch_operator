@@ -625,6 +625,11 @@ export class DashboardComponent implements OnInit {
   //////////////////////////////////////////////////////////////////////////////
   port_tooltip(portName: string): string {
     let tooltip = portName;
+    if (this.display_status(portName)){
+      tooltip += " - UP";
+    } else {
+      tooltip += " - DOWN";
+    }
     if (this.readonlyPorts.includes(portName)) {
       tooltip += " (locked by Adiministrator)";
     }

@@ -86,15 +86,65 @@
 
 
         <div fxFlex style="padding:1em; overflow: auto; width: 100%;" class="flex column no-cursor">
+            <!-- SWITCH VIEW -->
             <div mat-dialog-content class="flex column" style="place-content: center space-around;align-items: center;">
                 <div *ngFor='let member of editingDeviceSettings.members; let index = index' style="margin-bottom: 0em;">
                     <div class="flex column switch" style="place-content: flex-start;align-items: flex-start;">
-                        <div style="font-weight: lighter;" class="flex row">
-                            <div>
-                                {{editingDevice.model}}
+                        <div style="font-weight: lighter; width: 100%; justify-content: space-between;" class="flex row">
+                            <div class="flex row">
+                                <div class="hardware-model">
+                                    <div>JUNIPER</div>
+                                    <div style="font-weight: 500;">{{member.model}}</div>
+                                </div>
+                                <div style="margin-left: 5em;">ID {{member.fpc_idx}}</div>
                             </div>
-                            <div style="margin-left: 5em;">
-                                ID {{index}}</div>
+                            <div class="flex row">
+                                <div class="flex row">
+                                    <div>CPU</div>
+                                    <div *ngIf="member.cpu < 60">
+                                        <mat-icon matTooltip="{{member.cpu}}%" aria-hidden="false" style="color: #6f9d2b; margin-right: 1em;" inline="true">
+                                            check_circle</mat-icon>
+                                    </div>
+                                    <div *ngIf="member.cpu >= 60 && member.cpu < 80">
+                                        <mat-icon matTooltip="{{member.cpu}}%" aria-hidden="false" style="color: #f3b108; margin-right: 1em;" inline="true">
+                                            error</mat-icon>
+                                    </div>
+                                    <div *ngIf="member.cpu >= 80">
+                                        <mat-icon matTooltip="{{member.cpu}}%" aria-hidden="false" style="color: #c92614; margin-right: 1em;" inline="true">
+                                            cancel</mat-icon>
+                                    </div>
+                                </div>
+                                <div class="flex row">
+                                    <div>MEMORY</div>
+                                    <div *ngIf="member.memory < 60">
+                                        <mat-icon matTooltip="{{member.memory}}%" aria-hidden="false" style="color: #6f9d2b; margin-right: 1em;" inline="true">
+                                            check_circle</mat-icon>
+                                    </div>
+                                    <div *ngIf="member.memory >= 60 && member.memory < 80">
+                                        <mat-icon matTooltip="{{member.memory}}%" aria-hidden="false" style="color: #f3b108; margin-right: 1em;" inline="true">
+                                            error</mat-icon>
+                                    </div>
+                                    <div *ngIf="member.memory >= 80">
+                                        <mat-icon matTooltip="{{member.memory}}%" aria-hidden="false" style="color: #c92614; margin-right: 1em;" inline="true">
+                                            cancel</mat-icon>
+                                    </div>
+                                </div>
+                                <div *ngIf="member.poe" class="flex row">
+                                    <div>POE</div>
+                                    <div *ngIf="member.poe.power_draw / member.poe.max_power < 50">
+                                        <mat-icon matTooltip="{{member.poe.power_draw}} W / {{member.poe.max_power}} W" aria-hidden="false" style="color: #6f9d2b; margin-right: 1em;" inline="true">
+                                            check_circle</mat-icon>
+                                    </div>
+                                    <div *ngIf="member.poe.power_draw / member.poe.max_power >= 50 && member.poe.power_draw / member.poe.max_power < 75">
+                                        <mat-icon [matTooltip]="member.poe.power_draw / member.poe.max_power" aria-hidden="false" style="color: #f3b108; margin-right: 1em;" inline="true">
+                                            error</mat-icon>
+                                    </div>
+                                    <div *ngIf="member.poe.power_draw / member.poe.max_power >= 80">
+                                        <mat-icon [matTooltip]="member.poe.power_draw / member.poe.max_power" aria-hidden="false" style="color: #c92614; margin-right: 1em;" inline="true">
+                                            cancel</mat-icon>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="flex row" style="place-content: stretch flex-start;align-items: stretch;">
                             <div class="ports-container">
@@ -102,30 +152,30 @@
                                 <div *ngIf="display_pic(member, 0)" class="flex row ports-text" style="place-content: center;align-items: center;flex: 1 1 100%;max-height: 100%;">
                                     <span style="width: 60px;height: 20px;text-align: center;">PIC0</span>
                                 </div>
-                                <div *ngFor='let port of member.ports' style="cursor: pointer; z-index: 10;">
-                                    <div *ngIf='port | includes: "/0/"'>
-                                        <div [matTooltip]="port_tooltip(port)" class="normal-port" (click)="selectPort(port)" [ngClass]="{'port-up': display_status(port), 'selected-port': editingPortNames.includes(port), 'disabled': readonlyPorts.includes(port)}">                                            
-                                        </div>
+                                <div *ngFor='let port of member.ports; let index = index' style="cursor: pointer; z-index: 10;">
+                                    <div *ngIf='port | includes: "/0/"' class="port" [ngClass]="{'top': index % 2 == 0, 'bottom': index % 2 == 1, 'selected': editingPortNames.includes(port)}">
+                                        <div class="port-id" >{{port | split :"/":2}}</div>
+                                        <div [matTooltip]="port_tooltip(port)" class="normal-port" (click)="selectPort(port)" [ngClass]="{'port-up': display_status(port), 'disabled': readonlyPorts.includes(port)}"></div>
                                     </div>
                                 </div>
 
                                 <div *ngIf="display_pic(member, 1)" class="flex row ports-text"  style="place-content: center;align-items: center;flex: 1 1 100%;max-height: 100%;">
                                     <span style="width: 60px;height: 20px;text-align: center;">PIC1</span>
                                 </div>
-                                <div *ngFor='let port of member.ports' style="cursor: pointer; z-index: 10;">
-                                    <div *ngIf='port | includes: "/1/"'>
-                                        <div [matTooltip]="port" class="normal-port" (click)="selectPort(port)" [ngClass]="{'port-up':  display_status(port), 'selected-port': editingPortNames.includes(port), 'disabled': readonlyPorts.includes(port)}">
-                                        </div>
+                                <div *ngFor='let port of member.ports; let index = index' style="cursor: pointer; z-index: 10;">
+                                    <div *ngIf='port | includes: "/1/"' class="port" [ngClass]="{'top': index % 2 == 0, 'bottom': index % 2 == 1, 'selected': editingPortNames.includes(port)}">
+                                        <div class="port-id" >{{port | split :"/":2}}</div>
+                                        <div [matTooltip]="port_tooltip(port)" class="normal-port" (click)="selectPort(port)" [ngClass]="{'port-up': display_status(port), 'disabled': readonlyPorts.includes(port)}"></div>
                                     </div>
                                 </div>
 
                                 <div *ngIf="display_pic(member, 2)" class="flex row ports-text"  style="place-content: center;align-items: center;flex: 1 1 100%;max-height: 100%;">
                                     <span style="width: 60px;height: 20px;text-align: center;">PIC2</span>
                                 </div>
-                                <div *ngFor='let port of member.ports' style="cursor: pointer; z-index: 10;">
-                                    <div *ngIf='port | includes: "/2/"'>
-                                        <div [matTooltip]="port" class="normal-port" (click)="selectPort(port)" [ngClass]="{'port-up':  display_status(port), 'selected-port': editingPortNames.includes(port), 'disabled': readonlyPorts.includes(port)}">
-                                        </div>
+                                <div *ngFor='let port of member.ports; let index = index' style="cursor: pointer; z-index: 10;">
+                                    <div *ngIf='port | includes: "/2/"' class="port" [ngClass]="{'top': index % 2 == 0, 'bottom': index % 2 == 1, 'selected': editingPortNames.includes(port)}">
+                                        <div class="port-id" >{{port | split :"/":2}}</div>
+                                        <div [matTooltip]="port_tooltip(port)" class="normal-port" (click)="selectPort(port)" [ngClass]="{'port-up': display_status(port), 'disabled': readonlyPorts.includes(port)}"></div>
                                     </div>
                                 </div>
                             </div>
@@ -134,44 +184,98 @@
                     </div>
                 </div>
             </div>
-
+            <!-- INFO VIEW -->
             <div mat-dialog-content class="flex column" style="place-content: stretch flex-start;align-items: stretch;">
                 <div *ngIf="selectedPorts.length == 0" style="margin: 1em;place-content: stretch space-between;align-items: stretch;" class="flex column">
                     <div class="flex row">
-                        <mat-divider inset="true" style="margin: 1em;"></mat-divider>
-                        <span class="no-cursor" style="color: black; font-weight: light; width: 30em; text-align: center;" fxFlex="auto">Switch Management</span>
-                        <mat-divider inset="true" style="margin: 1em;"></mat-divider>
+                        <mat-card style="margin: 1em;">
+                            <mat-card-content>
+                                <mat-card-title class="info-title">Switch Info</mat-card-title>
+                                <table class="member-details">
+                                    <tr>
+                                        <th>Status</th>
+                                        <td>
+                                            <div *ngIf="editingDeviceSettings.info.status == 'connected'" style="color: #6f9d2c">{{editingDeviceSettings.info.status}}</div>
+                                            <div *ngIf="editingDeviceSettings.info.status != 'connected'" style="color: #f44336">{{editingDeviceSettings.info.status}}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Config Status</th>
+                                        <td>{{editingDeviceSettings.info.config_status}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Uptime</th>
+                                        <td>{{editingDeviceSettings.info.uptime | uptime}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Last Seen</th>
+                                        <td>{{editingDeviceSettings.info.last_seen * 1000 |date:'short'}}</td>
+                                    </tr>
+                                </table>
+                            </mat-card-content>
+                        </mat-card>
+                        <mat-card style="margin: 1em; flex: auto;">
+                            <mat-card-content>
+                                <mat-card-title class="info-title">Switch IP</mat-card-title>
+                                <table class="member-details">
+                                    <tr>
+                                        <th></th>
+                                        <th>VLAN</th>
+                                        <th>type</th>
+                                        <th>IP Address</th>
+                                        <th>Netmask</th>
+                                        <th>Gateway</th>
+                                    </tr>
+                                    <tr>
+                                        <th>In Band</th>
+                                        <td>{{editingDeviceSettings.device.ip_config.network}}</td>
+                                        <td>{{editingDeviceSettings.device.ip_config.type}}</td>
+                                        <td>{{editingDeviceSettings.device.ip_config.ip}}</td>
+                                        <td>{{editingDeviceSettings.device.ip_config.netmask}}</td>
+                                        <td>{{editingDeviceSettings.device.ip_config.gateway}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Out Band</th>
+                                        <td>{{editingDeviceSettings.device.oob_ip_config.network}}</td>
+                                        <td>{{editingDeviceSettings.device.oob_ip_config.type}}</td>
+                                        <td>{{editingDeviceSettings.device.oob_ip_config.ip}}</td>
+                                        <td>{{editingDeviceSettings.device.oob_ip_config.netmask}}</td>
+                                        <td>{{editingDeviceSettings.device.oob_ip_config.gateway}}</td>
+                                    </tr>
+                                </table>
+                            </mat-card-content>
+                        </mat-card>
                     </div>
-                    <mat-card style="margin: 0 1em;">
+                    
+                    
+                    <mat-card style="margin: 1em;">
                         <mat-card-content>
+                            <mat-card-title class="info-title">Switch Details</mat-card-title>
                             <table class="member-details">
                                 <tr>
-                                    <th></th>
-                                    <th>VLAN</th>
-                                    <th>type</th>
-                                    <th>IP Address</th>
-                                    <th>Netmask</th>
-                                    <th>Gateway</th>
+                                    <th>MODEL</th>
+                                    <th>SERIAL</th>
+                                    <th>MAC ADDRESS</th>
+                                    <th>VERSION</th>
+                                    <th>VC MEMBER #</th>
+                                    <th>VC MEMBER ROLE</th>
+                                    <th>POE</th>
+                                    <th>POE BUDGET</th>
                                 </tr>
-                                <tr>
-                                    <th>In Band</th>
-                                    <td>{{editingDeviceSettings.device.ip_config.network}}</td>
-                                    <td>{{editingDeviceSettings.device.ip_config.type}}</td>
-                                    <td>{{editingDeviceSettings.device.ip_config.ip}}</td>
-                                    <td>{{editingDeviceSettings.device.ip_config.netmask}}</td>
-                                    <td>{{editingDeviceSettings.device.ip_config.gateway}}</td>
-                                </tr>
-                                <tr>
-                                    <th>Out Band</th>
-                                    <td>{{editingDeviceSettings.device.oob_ip_config.network}}</td>
-                                    <td>{{editingDeviceSettings.device.oob_ip_config.type}}</td>
-                                    <td>{{editingDeviceSettings.device.oob_ip_config.ip}}</td>
-                                    <td>{{editingDeviceSettings.device.oob_ip_config.netmask}}</td>
-                                    <td>{{editingDeviceSettings.device.oob_ip_config.gateway}}</td>
+                                <tr *ngFor="let member of editingDeviceSettings.members; let index = index">
+                                    <td>{{member.model}}</td>
+                                    <td>{{member.serial}}</td>
+                                    <td>{{member.mac}}</td>
+                                    <td>{{member.version}}</td>
+                                    <td>{{member.fpc_idx}}</td>
+                                    <td>{{member.vc_role}}</td>
+                                    <td><div *ngIf="member.poe">{{member.poe.power_draw}} W</div></td>
+                                    <td><div *ngIf="member.poe">{{member.poe.max_power}} W</div></td>
                                 </tr>
                             </table>
                         </mat-card-content>
                     </mat-card>
+                    <!-- 
                     <div class="flex row" style="margin-top: 1em;">
                         <mat-divider inset="true" style="margin: 1em;"></mat-divider>
                         <span class="no-cursor" style="color: black; font-weight: light; width: 20em; text-align: center;flex: 1 1 auto;">Switch Status</span>
@@ -251,124 +355,130 @@
                                 </table>
                             </mat-card-content>
                         </mat-card>
-                    </div>
+                    </div> -->
 
                 </div>
             </div>
-
+            <!-- CONFIG VIEW -->
             <div *ngIf="selectedPorts.length >= 1">
-                <div>
-                <div>Port Info</div>
-                <div style="max-height: 23em; overflow: auto;">
-                <table mat-table [dataSource]="selectedPortsStats" class="mat-elevation-z8">
 
-                    <!--- Note that these columns can be defined in any order.
-                          The actual rendered columns are set as a property on the row definition" -->
-                  
-                    <ng-container matColumnDef="port_id">
-                      <th mat-header-cell *matHeaderCellDef> Port </th>
-                      <td mat-cell *matCellDef="let element"> {{element.port_id}} </td>
-                    </ng-container>
-                    <ng-container matColumnDef="up">
-                      <th mat-header-cell *matHeaderCellDef> Status </th>
-                      <td mat-cell *matCellDef="let element"> {{element.up}} </td>
-                    </ng-container>
-                    <ng-container matColumnDef="media_type">
-                      <th mat-header-cell *matHeaderCellDef> Type </th>
-                      <td mat-cell *matCellDef="let element"> {{element.media_type}} </td>
-                    </ng-container>
-                    <ng-container matColumnDef="neighbor_system_name">
-                      <th mat-header-cell *matHeaderCellDef> LLDP Neighbor System Name </th>
-                      <td mat-cell *matCellDef="let element"> {{element.neighbor_system_name}} </td>
-                    </ng-container>
-                    <ng-container matColumnDef="neighbor_mac">
-                      <th mat-header-cell *matHeaderCellDef> LLDP Neighbor MAC </th>
-                      <td mat-cell *matCellDef="let element"> {{element.neighbor_mac}} </td>
-                    </ng-container>
-                    <ng-container matColumnDef="neighbor_port_desc">
-                      <th mat-header-cell *matHeaderCellDef> LLDP Neighbor Port Description </th>
-                      <td mat-cell *matCellDef="let element"> {{element.neighbor_port_desc}} </td>
-                    </ng-container>
-                  
-                    <tr mat-header-row *matHeaderRowDef="displayedStatsColumns; sticky: true"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedStatsColumns;"></tr>
-                  </table>
-                </div>
-                </div>
-                <div>
-                <div>Configuration</div>
-                <div class="flex row" style="margin: 1em;">
-                    <mat-divider inset="true" style="margin: 1em;"></mat-divider>
-                    <span *ngIf="selectedPorts.length == 1" class="no-cursor" style="color: black; font-weight: light; width: 20em; text-align: center;" fxFlex="auto">{{selectedPorts[0].port}}</span>
-                    <span *ngIf="selectedPorts.length > 1" class="no-cursor" style="color: black; font-weight: light; width: 20em; text-align: center;" fxFlex="auto">Multi
-                        Selection</span>
-                    <mat-divider inset="true" style="margin: 1em;"></mat-divider>
-                </div>
-                <form [formGroup]="frmPort" class="flex column create-form">
-                    <div class="flex row" style="place-content: center flex-start;align-items: center;">
-                        <div class="flex column mist-space-around">
-                            <mat-label>Port Status</mat-label>
-                            <mat-slide-toggle formControlName="enabled">
-                                <span *ngIf="frmPort.value.enabled == true">Enabled </span>
-                                <span *ngIf="frmPort.value.enabled != true">Disabled </span>
-                            </mat-slide-toggle>
+                <mat-card style="margin: 1em;">
+                    <mat-card-content>
+                        <mat-card-title class="info-title">Selected Ports Info</mat-card-title>
+
+                        <div style="max-height: 23em; overflow: auto;">
+                            <table mat-table [dataSource]="selectedPortsStats">
+
+                                <ng-container matColumnDef="port_id">
+                                <th mat-header-cell *matHeaderCellDef> Port </th>
+                                <td mat-cell *matCellDef="let element"> {{element.port_id}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="up">
+                                <th mat-header-cell *matHeaderCellDef> Status </th>
+                                <td mat-cell *matCellDef="let element"> 
+                                    <div *ngIf="element.up">UP</div> 
+                                    <div *ngIf="!element.up">DOWN</div> 
+                                </td>
+                                </ng-container>
+                                <ng-container matColumnDef="media_type">
+                                <th mat-header-cell *matHeaderCellDef> Type </th>
+                                <td mat-cell *matCellDef="let element"> {{element.media_type}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="neighbor_system_name">
+                                <th mat-header-cell *matHeaderCellDef> LLDP Neighbor System Name </th>
+                                <td mat-cell *matCellDef="let element"> {{element.neighbor_system_name}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="neighbor_mac">
+                                <th mat-header-cell *matHeaderCellDef> LLDP Neighbor MAC </th>
+                                <td mat-cell *matCellDef="let element"> {{element.neighbor_mac}} </td>
+                                </ng-container>
+                                <ng-container matColumnDef="neighbor_port_desc">
+                                <th mat-header-cell *matHeaderCellDef> LLDP Neighbor Port Description </th>
+                                <td mat-cell *matCellDef="let element"> {{element.neighbor_port_desc}} </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedStatsColumns; sticky: true"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedStatsColumns;"></tr>
+                            </table>
                         </div>
-                        <div class="flex column mist-space">
-                            <mat-label>PoE</mat-label>
-                            <mat-slide-toggle formControlName="poe">
-                                <span *ngIf="frmPort.value.poe == true">Enabled </span>
-                                <span *ngIf="frmPort.value.poe != true">Disabled </span>
-                            </mat-slide-toggle>
-                        </div>
-                    </div>
-                    <mat-form-field appearance="outline" class="mist-space">
-                        <mat-label>VLAN</mat-label>
-                        <mat-select formControlName="port_network">
-                            <mat-option value="">None</mat-option>
-                            <mat-option *ngFor="let vlan of editingDeviceSettings.networks | mapToArray" [value]="vlan.key">
-                                {{vlan.key}} ({{vlan.value.vlan_id}})
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                    </mat-card-content>
+                </mat-card>
+                <mat-card style="margin: 1em;">
+                    <mat-card-content>
+                        <mat-card-title class="info-title">Selected Ports Configuration</mat-card-title>
+                            <!-- <div class="flex row" style="margin: 1em;">
+                                <mat-divider inset="true" style="margin: 1em;"></mat-divider>
+                                <span *ngIf="selectedPorts.length == 1" class="no-cursor" style="color: black; font-weight: light; width: 20em; text-align: center;" fxFlex="auto">{{selectedPorts[0].port}}</span>
+                                <span *ngIf="selectedPorts.length > 1" class="no-cursor" style="color: black; font-weight: light; width: 20em; text-align: center;" fxFlex="auto">Multi
+                                    Selection</span>
+                                <mat-divider inset="true" style="margin: 1em;"></mat-divider>
+                            </div> -->
+                            <form [formGroup]="frmPort" class="flex column create-form">
+                                <div class="flex row" style="place-content: center flex-start;align-items: center;">
+                                    <div class="flex column mist-space-around">
+                                        <mat-label>Port Status</mat-label>
+                                        <mat-slide-toggle formControlName="enabled">
+                                            <span *ngIf="frmPort.value.enabled == true">Enabled </span>
+                                            <span *ngIf="frmPort.value.enabled != true">Disabled </span>
+                                        </mat-slide-toggle>
+                                    </div>
+                                    <div class="flex column mist-space">
+                                        <mat-label>PoE</mat-label>
+                                        <mat-slide-toggle formControlName="poe">
+                                            <span *ngIf="frmPort.value.poe == true">Enabled </span>
+                                            <span *ngIf="frmPort.value.poe != true">Disabled </span>
+                                        </mat-slide-toggle>
+                                    </div>
+                                </div>
+                                <mat-form-field appearance="outline" class="mist-space">
+                                    <mat-label>VLAN</mat-label>
+                                    <mat-select formControlName="port_network">
+                                        <mat-option value="">None</mat-option>
+                                        <mat-option *ngFor="let vlan of editingDeviceSettings.networks | mapToArray" [value]="vlan.key">
+                                            {{vlan.key}} ({{vlan.value.vlan_id}})
+                                        </mat-option>
+                                    </mat-select>
+                                </mat-form-field>
 
-                    <div class="flex column mist-space-around">
-                        <mat-label>Auto-Negociation</mat-label>
-                        <mat-slide-toggle formControlName="autoneg">
-                            <span *ngIf="frmPort.value.autoneg == true">Enabled </span>
-                            <span *ngIf="frmPort.value.autoneg != true">Disabled </span>
-                        </mat-slide-toggle>
-                    </div>
-                    <div class="mist-space">
+                                <div class="flex column mist-space-around">
+                                    <mat-label>Auto-Negociation</mat-label>
+                                    <mat-slide-toggle formControlName="autoneg">
+                                        <span *ngIf="frmPort.value.autoneg == true">Enabled </span>
+                                        <span *ngIf="frmPort.value.autoneg != true">Disabled </span>
+                                    </mat-slide-toggle>
+                                </div>
+                                <div class="mist-space">
 
-                        <mat-form-field appearance="outline">
-                            <mat-label>SPEED</mat-label>
-                            <mat-select formControlName="speed" [disabled]="frmPort.value.autoneg">
-                                <mat-option value="auto">Auto</mat-option>
-                                <mat-option value="10m">10M</mat-option>
-                                <mat-option value="100m">100M</mat-option>
-                                <mat-option value="1g">1G</mat-option>
-                                <mat-option value="2.5g">2.5G</mat-option>
-                                <mat-option value="5g">5G</mat-option>
-                            </mat-select>
-                        </mat-form-field>
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>SPEED</mat-label>
+                                        <mat-select formControlName="speed" [disabled]="frmPort.value.autoneg">
+                                            <mat-option value="auto">Auto</mat-option>
+                                            <mat-option value="10m">10M</mat-option>
+                                            <mat-option value="100m">100M</mat-option>
+                                            <mat-option value="1g">1G</mat-option>
+                                            <mat-option value="2.5g">2.5G</mat-option>
+                                            <mat-option value="5g">5G</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
 
-                        <mat-form-field appearance="outline">
-                            <mat-label>DUPLEX</mat-label>
-                            <mat-select formControlName="duplex" [disabled]="frmPort.value.autoneg">
-                                <mat-option value="auto">Auto</mat-option>
-                                <mat-option value="full">Full</mat-option>
-                                <mat-option value="half">Half</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>DUPLEX</mat-label>
+                                        <mat-select formControlName="duplex" [disabled]="frmPort.value.autoneg">
+                                            <mat-option value="auto">Auto</mat-option>
+                                            <mat-option value="full">Full</mat-option>
+                                            <mat-option value="half">Half</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
 
-                </form>
+                            </form>
+                    </mat-card-content>
+                </mat-card>
+                <div mat-dialog-actions style="justify-content: space-around;" class="flex row" *ngIf="selectedPorts.length >= 1">
+                    <button mat-raised-button (click)="discardPorts()">Close</button>
+                    <button mat-raised-button color="accent" (click)="savePorts()" [disabled]="frmPort.invalid">Update</button>
+                </div>
             </div>
-            <div mat-dialog-actions style="justify-content: space-around;" class="flex row" *ngIf="selectedPorts.length >= 1">
-                <button mat-raised-button (click)="discardPorts()">Close</button>
-                <button mat-raised-button color="accent" (click)="savePorts()" [disabled]="frmPort.invalid">Update</button>
-            </div>
-        </div>
         </div>
     </div>
 </mat-card>

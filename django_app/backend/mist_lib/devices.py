@@ -88,7 +88,14 @@ class Devices(Common):
         if not "status" in device_settings and not "status" in site_settings:
             data = self._generate_device_settings(
                 device_settings, site_settings, device_stats, device_models)
-            return {"status": 200, "data": {"members": data["members"], "networks": networks, "ports": data["ports"], "site": site_settings, "device": device_settings}}
+            return {"status": 200, "data": {
+                "members": data["members"],
+                "networks": networks,
+                "ports": data["ports"],
+                "site": site_settings,
+                "device": device_settings,
+                "info": data["info"]
+                }}
 
     def _generate_networks(self, site_config, device_config):
         networks = site_config.get("networks", {})
@@ -203,23 +210,35 @@ class Devices(Common):
     def _generate_device_settings(self, device_settings, site_settings, device_stats, device_models):
         data = {
             "members": [],
-            "ports": {}
+            "ports": {},
+            "info":{
+            "config_status": device_stats.get("config_status"),
+            "last_seen": device_stats.get("last_seen"),
+            "ip_stat": device_stats.get("ip_stat"),
+            "uptime": device_stats.get("uptime"),
+            "status": device_stats.get("status"),
+            }
         }
         fpc = 0
         # Add information about each member of the VC (or the standalone)
-        for member in device_stats["module_stat"]:
+        for member in device_stats.get("module_stat", []):
             tmp = {
-                "mac": member["mac"] if "mac" in member else "None",
-                "model": member["model"] if "model" in member else "None",
-                "serial": member["serial"] if "serial" in member else "None",
-                "vc_state": member["vc_state"] if "vc_state" in member else "None",
-                "poe": member["poe"] if "poe" in member else "None",
-                "fans": member["fans"] if "fans" in member else "None",
-                "uptime": member["uptime"] if "uptime" in member else "None",
-                "temperatures": member["temperatures"] if "temperatures" in member else "None",
-                "vc_links": member["vc_links"] if "vc_links" in member else "None",
-                "psus": member["psus"] if "psus" in member else "None",
-                "vc_role": member["vs_role"] if "vs_role" in member else "None",
+                "mac": member.get("mac", None),
+                "model": member.get("model", None),
+                "serial": member.get("serial", None),
+                "vc_state": member.get("vc_state", None),
+                "poe": member.get("poe", None),
+                "uptime": member.get("uptime", None),
+                "temperatures": member.get("temperatures", None),
+                "vc_links": member.get("vc_links", None),
+                "vc_role": member.get("vc_role", None),
+                "version": member.get("version"),
+                "fpc_idx": member.get("fpc_idx"),
+                "fans": member.get("fans"),
+                "psus": member.get("psus"),
+                "temperatures": member.get("temperatures"),
+                "memory": member.get("memory_stat", {}).get("usage", 0),
+                "cpu": 100 - member.get("cpu_stat", {}).get("idle", 0),
                 "ports": [],
                 "columns": {
                     "rj45": 0,

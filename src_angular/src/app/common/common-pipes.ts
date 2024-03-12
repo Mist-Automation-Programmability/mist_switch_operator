@@ -24,3 +24,25 @@ export class IncludesPipe implements PipeTransform {
         return fullText.includes(textMatch);
     }
 }
+
+@Pipe({ name: "uptime"})
+export class UptimePipe implements PipeTransform {
+    transform(value: number) :string{
+        console.log(value);
+        let hours_left = value % 86400;
+        let minutes_left = hours_left % 3600;
+        let seconds_left = minutes_left % 60;
+
+        const days = (value - hours_left) / 86400;
+        const hours = (hours_left - minutes_left) / 3600;
+        const minutes = (minutes_left - seconds_left) / 60;
+        return days+"d, "+hours+"h, "+minutes+"m";
+    }
+}
+
+@Pipe({name:'split'})
+export class SplitPipe implements PipeTransform {
+    transform(value: string, split_entry: string, entry:number) {
+        return value.split(split_entry)[entry];
+    }
+}
