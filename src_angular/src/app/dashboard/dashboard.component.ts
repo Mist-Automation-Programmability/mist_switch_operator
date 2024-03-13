@@ -1,9 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
-import { UntypedFormBuilder, Validators, UntypedFormControl } from '@angular/forms';
+import { UntypedFormBuilder, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-
 import { MatPaginator } from '@angular/material/paginator';
 
 import { ErrorDialog } from '../common/common-error';
@@ -129,8 +128,8 @@ export class DashboardComponent implements OnInit {
     enable_mac_auth: "",
     guest_network: "",
     bypass_auth_when_server_down: false,
-    speed: ["auto"],
-    duplex: ["auto"],
+    speed: "auto",
+    duplex: "auto",
     autoneg: true,
     mac_limit: 0,
     stp_edge: true,
@@ -192,6 +191,7 @@ export class DashboardComponent implements OnInit {
   readonlyPorts = [];
   lacpPorts = {};
   portsInAe = [];
+  filteredTrunkVlans = [];
 
   filteredDevicesDatabase: MatTableDataSource<DeviceElement> | null;
   selectedPortsStats=[];
@@ -321,14 +321,15 @@ export class DashboardComponent implements OnInit {
 
   // Reset the ports selection and form
   private discardPorts(): void {
-    this.selectedPorts = []
-    this.editingPortNames = []
-    this.frmPort.reset()
+    this.selectedPorts = [];
+    this.selectedLacps = [];
+    this.editingPortNames = [];
+    this.frmPort.reset();
   }
 
   powerDraw(member) {
-    var percentage = (member.poe.power_draw / member.poe.max_power) * 100
-    return percentage
+    var percentage = (member.poe.power_draw / member.poe.max_power) * 100;
+    return percentage;
   }
 
 
@@ -508,7 +509,6 @@ export class DashboardComponent implements OnInit {
       if (this.selectedPorts.length == max_ports) this.setPortFields(this.selectedPorts[0]);
       else this.setDefaultPortFielts();
       // UPDATE UI
-      console.log(this.selectedLacps)
       this.updateSelectedPortsStatus();
     }
   }
@@ -576,13 +576,13 @@ export class DashboardComponent implements OnInit {
         port_config: this.selectedPorts,
         device_id: this.editingDevice.id
       }
-      console.log(body)
       this._http.post<any>('/api/devices/update/', body).subscribe({
         next: data => {
-          this.topbar_loading = false
+          this.topbar_loading = false;
           //this.updateFrmDeviceValues(data.result)
-          this.getDeviceSettings()
-          this.openSnackBar("Device " + this.editingDevice.mac + " successfully updated", "Done")
+          this.getDeviceSettings();
+          this.openSnackBar("Device " + this.editingDevice.mac + " successfully updated", "Done");
+          this.discardPorts()
         },
         error: error => {
           this.topbar_loading = false
@@ -619,17 +619,20 @@ export class DashboardComponent implements OnInit {
       else if (port_usage in this.editingDeviceSettings.site.port_usages) {
         port_config = this.editingDeviceSettings.site.port_usages[port_usage]
       }
+      console.log(port_config)
       // setting the config object with the port_usage settings
       for (var key in port_config) {
         config[key] = port_config[key]
       }
     }
+    console.log(config)
     this.updateFrmDeviceValues(config)
   }
 
   canbeChecked(portName): boolean {
     return this.editingPortNames.includes(portName);
   }
+
   //////////////////////////////////////////////////////////////////////////////
   /////           COMMON
   //////////////////////////////////////////////////////////////////////////////
@@ -647,20 +650,24 @@ export class DashboardComponent implements OnInit {
   }
 
   updateFrmDeviceValues(config: PortElement): void {
-    this.frmPort.reset()
-    this.frmPort.controls["port_network"].setValue(config.port_network)
-    this.frmPort.controls["autoneg"].setValue(config.disable_autoneg == false)
-    this.frmPort.controls["enabled"].setValue(config.disabled == false)
-    this.frmPort.controls["poe"].setValue(config.poe_disabled == false)
-    if (config.disable_autoneg == true) {
-      this.frmPort.controls["duplex"] = new UntypedFormControl({ value: config.duplex, disabled: true })
-      this.frmPort.controls["speed"] = new UntypedFormControl({ value: config.speed, disabled: true })
+    this.frmPort.reset();
+    let mode = config.mode;
+    if (! mode) mode = "access";
+    this.frmPort.controls["mode"].setValue(mode);
+    this.frmPort.controls["all_networks"].setValue(config.all_networks);
+    this.frmPort.controls["port_network"].setValue(config.port_network);
+    this.frmPort.controls["networks"].setValue(config.networks);
+    this.frmPort.controls["autoneg"].setValue(config.disable_autoneg == false);
+    this.frmPort.controls["enabled"].setValue(config.disabled == false);
+    this.frmPort.controls["poe"].setValue(config.poe_disabled == false);
+    if (config.disable_autoneg == false) {
+      this.frmPort.controls["duplex"] = new FormControl({ value: config.duplex, disabled: true });
+      this.frmPort.controls["speed"] = new FormControl({ value: config.speed, disabled: true });
     } else {
-      this.frmPort.controls["speed"].setValue(config.speed)
-      this.frmPort.controls["duplex"].setValue(config.duplex)
+      this.frmPort.controls["speed"].setValue(config.speed);
+      this.frmPort.controls["duplex"].setValue(config.duplex);
     }
   }
-
 
   sortList(data, attribute) {
     return data.sort(function (a, b) {

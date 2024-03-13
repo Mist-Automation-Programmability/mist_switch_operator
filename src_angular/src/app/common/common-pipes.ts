@@ -28,7 +28,6 @@ export class IncludesPipe implements PipeTransform {
 @Pipe({ name: "uptime"})
 export class UptimePipe implements PipeTransform {
     transform(value: number) :string{
-        console.log(value);
         let hours_left = value % 86400;
         let minutes_left = hours_left % 3600;
         let seconds_left = minutes_left % 60;

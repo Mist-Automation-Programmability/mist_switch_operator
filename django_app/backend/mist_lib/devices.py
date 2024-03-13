@@ -102,7 +102,11 @@ class Devices(Common):
         device_networks = device_config.get("networks", {})
         for network in device_networks:
             networks[network] = device_networks[network]
-        return networks
+        sorted_networks = sorted(networks)
+        tmp = {}
+        for network in sorted_networks:
+            tmp[network]=networks[network]
+        return tmp
 
     def _get_device_settings(self, extract, body, retry=False):
         device_id = body["device_id"]
