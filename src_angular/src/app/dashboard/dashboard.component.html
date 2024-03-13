@@ -129,7 +129,7 @@
                                             cancel</mat-icon>
                                     </div>
                                 </div>
-                                <div *ngIf="member.poe" class="flex row">
+                                <div *ngIf="member.poe.max_power" class="flex row">
                                     <div>POE</div>
                                     <div *ngIf="member.poe.power_draw / member.poe.max_power < 50">
                                         <mat-icon matTooltip="{{member.poe.power_draw}} W / {{member.poe.max_power}} W" aria-hidden="false" style="color: #6f9d2b; margin-right: 1em;" inline="true">
@@ -152,7 +152,7 @@
                                 <div *ngIf="display_pic(member, 0)" class="flex row ports-text" style="place-content: center;align-items: center;flex: 1 1 100%;max-height: 100%;">
                                     <span style="width: 60px;height: 20px;text-align: center;">PIC0</span>
                                 </div>
-                                <div *ngFor='let port of member.ports; let index = index' style="cursor: pointer; z-index: 10;">
+                                <div *ngFor='let port of member.ports; let index = index' style="z-index: 10;">
                                     <div *ngIf='port | includes: "/0/"' class="port" [ngClass]="{'top': index % 2 == 0, 'bottom': index % 2 == 1, 'selected': editingPortNames.includes(port)}">
                                         <div class="port-id" >{{port | split :"/":2}}</div>
                                         <div [matTooltip]="port_tooltip(port)" class="normal-port" (click)="selectPort(port)" [ngClass]="{'port-up': display_status(port), 'disabled': readonlyPorts.includes(port)}"></div>
@@ -162,7 +162,7 @@
                                 <div *ngIf="display_pic(member, 1)" class="flex row ports-text"  style="place-content: center;align-items: center;flex: 1 1 100%;max-height: 100%;">
                                     <span style="width: 60px;height: 20px;text-align: center;">PIC1</span>
                                 </div>
-                                <div *ngFor='let port of member.ports; let index = index' style="cursor: pointer; z-index: 10;">
+                                <div *ngFor='let port of member.ports; let index = index' style="z-index: 10;">
                                     <div *ngIf='port | includes: "/1/"' class="port" [ngClass]="{'top': index % 2 == 0, 'bottom': index % 2 == 1, 'selected': editingPortNames.includes(port)}">
                                         <div class="port-id" >{{port | split :"/":2}}</div>
                                         <div [matTooltip]="port_tooltip(port)" class="normal-port" (click)="selectPort(port)" [ngClass]="{'port-up': display_status(port), 'disabled': readonlyPorts.includes(port)}"></div>
@@ -172,7 +172,7 @@
                                 <div *ngIf="display_pic(member, 2)" class="flex row ports-text"  style="place-content: center;align-items: center;flex: 1 1 100%;max-height: 100%;">
                                     <span style="width: 60px;height: 20px;text-align: center;">PIC2</span>
                                 </div>
-                                <div *ngFor='let port of member.ports; let index = index' style="cursor: pointer; z-index: 10;">
+                                <div *ngFor='let port of member.ports; let index = index' style="z-index: 10;">
                                     <div *ngIf='port | includes: "/2/"' class="port" [ngClass]="{'top': index % 2 == 0, 'bottom': index % 2 == 1, 'selected': editingPortNames.includes(port)}">
                                         <div class="port-id" >{{port | split :"/":2}}</div>
                                         <div [matTooltip]="port_tooltip(port)" class="normal-port" (click)="selectPort(port)" [ngClass]="{'port-up': display_status(port), 'disabled': readonlyPorts.includes(port)}"></div>

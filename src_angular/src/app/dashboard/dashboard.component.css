@@ -238,6 +238,7 @@ span.port-text {
   border: 1px solid transparent;
   box-shadow: none;
   border: 1px solid #6f9d2b;
+  cursor: pointer;
 }
 .normal-port.disabled {
   cursor: default;

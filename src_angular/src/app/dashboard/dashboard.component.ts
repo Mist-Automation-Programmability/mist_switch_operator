@@ -656,10 +656,14 @@ export class DashboardComponent implements OnInit {
     this.frmPort.controls["mode"].setValue(mode);
     this.frmPort.controls["all_networks"].setValue(config.all_networks);
     this.frmPort.controls["port_network"].setValue(config.port_network);
-    this.frmPort.controls["networks"].setValue(config.networks);
     this.frmPort.controls["autoneg"].setValue(config.disable_autoneg == false);
     this.frmPort.controls["enabled"].setValue(config.disabled == false);
     this.frmPort.controls["poe"].setValue(config.poe_disabled == false);
+    if (config.all_networks == true) {
+      this.frmPort.controls["networks"] = new FormControl({ value: config.networks, disabled: true });
+    } else {
+      this.frmPort.controls["networks"].setValue(config.networks);
+    }
     if (config.disable_autoneg == false) {
       this.frmPort.controls["duplex"] = new FormControl({ value: config.duplex, disabled: true });
       this.frmPort.controls["speed"] = new FormControl({ value: config.speed, disabled: true });
