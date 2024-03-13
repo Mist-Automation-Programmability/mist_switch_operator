@@ -13,11 +13,27 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ## Features
 - list switches
-- single/multi ports configuration changes
+- display basic switch info
+- single/multi ports or LACP configuration changes
+  - Port:
+    - port enabled/disabled
+    - POE enabled/disabled
+  - VLAN:
+    - mode access/trunk
+    - access VLAN (access mode)
+    - native/trunk VLANs (trunk mode)
+  - Link:
+    - autonegociation enabled/disabled
+    - speed and duplex (if autonegocation disabled)
 - update switch settings
+- Virtual Chassis support
+- Leverage the "no_local_overwrite" setting from Mist to block the ports configuration from this tool:
+
+![no_local_overwrite setting](._readme/image.png)
 
 
-<img src="https://github.com/tmunzer/mist_switch_operator/raw/main/._readme/img/main.png"  width="75%"  />
+<img src="._readme/img/info.png"  width="45%"  />
+<img src="._readme/img/config.png"  width="45%"  />
 
 
 ## How it's working
