@@ -352,20 +352,21 @@ class Devices(Common):
     def _mutate_device_settings(self, body, mist_device_settings):
         new_ae_config = {}
         for port in body["port_config"]:
-            port_usage_name = port.get("device", {}).get("usage")
-            if not port_usage_name:
-                port_usage_name = port.get("site", {}).get("usage")
-            if port_usage_name and not port_usage_name.startswith(PORT_USAGE_NAME_PREFIX):
-                port_usage_name = None
             
             if port.get("ae_uuid"):
                 ae_uuid = port["ae_uuid"]
+                ae_profile = port.get("device", {}).get("usage")
+                if not ae_profile:
+                    ae_profile = port.get("site", {}).get("usage")
+                if not ae_profile.startswith(PORT_USAGE_NAME_PREFIX):
+                    ae_profile = None
                 port_name = port["port"]
                 port_usage = port["new_conf"]
                 if not new_ae_config.get(ae_uuid):
                     new_ae_config[ae_uuid] = {
                         "ports": [port_name],
-                        "new_conf": port_usage 
+                        "new_conf": port_usage ,
+                        "ae_profile": ae_profile
                     }
                 else:
                     new_ae_config[ae_uuid]["ports"].append(port_name)
@@ -373,36 +374,34 @@ class Devices(Common):
                 mist_device_settings = self._unset_port_conf(
                     port, mist_device_settings)
                 mist_device_settings = self._set_port_usage(
-                    port_usage_name, port, mist_device_settings)
+                    port, mist_device_settings)
                 mist_device_settings = self._set_port_conf(
-                    port_usage_name, port, mist_device_settings)
+                    port, mist_device_settings)
         if new_ae_config:
             for ae_uuid, ae_config in new_ae_config.items():
                 mist_device_settings = self._unset_ae_conf(
                     ae_config, mist_device_settings)
                 mist_device_settings = self._set_ae_usage(
-                    port_usage_name, ae_uuid, ae_config, mist_device_settings)
+                    ae_uuid, ae_config, mist_device_settings)
                 mist_device_settings = self._set_ae_conf(
-                    port_usage_name, ae_uuid, ae_config, mist_device_settings)
+                    ae_uuid, ae_config, mist_device_settings)
         return mist_device_settings
 
     ## GENERATE AE CONF
-    def _set_ae_usage(self, ae_usage_name:str, ae_uuid:str, ae_config:dict, mist_device_settings:dict):
-        if not ae_usage_name:
-            ae_usage_name = f"{PORT_USAGE_NAME_PREFIX}ae-{ae_uuid.split('-')[0]}"
-        mist_device_settings["port_usages"][ae_usage_name] = ae_config["new_conf"]
-        mist_device_settings["port_usages"][ae_usage_name]["name"] = ae_usage_name
+    def _set_ae_usage(self, ae_uuid:str, ae_config:dict, mist_device_settings:dict):
+        ae_profile = ae_config.get("ae_profile", f"{PORT_USAGE_NAME_PREFIX}ae-{ae_uuid.split('-')[0]}")
+        mist_device_settings["port_usages"][ae_profile] = ae_config["new_conf"]
+        mist_device_settings["port_usages"][ae_profile]["name"] = ae_profile
         return mist_device_settings
 
-    def _set_ae_conf(self, ae_usage_name:str, ae_uuid:str, ae_config:dict, mist_device_settings:dict):        
+    def _set_ae_conf(self, ae_uuid:str, ae_config:dict, mist_device_settings:dict):
         ae_name = ",".join(ae_config["ports"])
-        if not ae_usage_name:
-            ae_usage_name = f"{PORT_USAGE_NAME_PREFIX}ae-{ae_uuid.split('-')[0]}"
+        ae_profile = ae_config.get("ae_profile", f"{PORT_USAGE_NAME_PREFIX}ae-{ae_uuid.split('-')[0]}")
         if not "port_config" in mist_device_settings:
             mist_device_settings["port_config"] = {}
         mist_device_settings["port_config"][ae_name] = {
             "dynamic_usage": None,
-            "usage": ae_usage_name,
+            "usage": ae_profile,
             "no_local_overwrite": False,
             "aggregated": True
         }
@@ -461,17 +460,15 @@ class Devices(Common):
         return mist_device_settings
     
     ## GENERATE PORT CONFIG
-    def _set_port_usage(self, port_usage_name:str, port:dict, mist_device_settings:dict):
-        if not port_usage_name:
-            port_usage_name = f"{PORT_USAGE_NAME_PREFIX}{port['port'].replace('/', '_')}"
+    def _set_port_usage(self, port:dict, mist_device_settings:dict):
+        port_usage_name = f"{PORT_USAGE_NAME_PREFIX}{port['port'].replace('/', '_')}"
         mist_device_settings["port_usages"][port_usage_name] = port["new_conf"]
         mist_device_settings["port_usages"][port_usage_name]["name"] = port_usage_name
         return mist_device_settings
 
-    def _set_port_conf(self, port_usage_name:str, port:dict, mist_device_settings:dict):
+    def _set_port_conf(self, port:dict, mist_device_settings:dict):
         port_name = port["port"]
-        if not port_usage_name:
-            port_usage_name = f"{PORT_USAGE_NAME_PREFIX}{port_name.replace('/', '_')}"
+        port_usage_name = f"{PORT_USAGE_NAME_PREFIX}{port_name.replace('/', '_')}"
         if not "port_config" in mist_device_settings:
             mist_device_settings["port_config"] = {}
         mist_device_settings["port_config"][port_name] = {
