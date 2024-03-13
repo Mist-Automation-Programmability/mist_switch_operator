@@ -12,6 +12,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 ## Features
+<img src="._readme/img/info.png"  width="45%"  />
+<img src="._readme/img/config.png"  width="45%"  />
+
 - list switches
 - display basic switch info
 - single/multi ports or LACP configuration changes
@@ -32,8 +35,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ![no_local_overwrite setting](._readme/image.png)
 
 
-<img src="._readme/img/info.png"  width="45%"  />
-<img src="._readme/img/config.png"  width="45%"  />
 
 
 ## How it's working
@@ -60,7 +61,7 @@ You can run it as a strandalone Python application, or deploy it as a Docker con
 4. from the `django_app`folder, start the app with `python3 ./manage.py runserver` (please see Djano server options with `python3 ./manage.py runserver -h`)
 
 ### Docker Image
-The docker image is available on docker hub: https://hub.docker.com/repository/docker/tmunzer/mist_switch_operator_web_ui.
+The docker image is available on docker hub: https://hub.docker.com/repository/docker/tmunzer/mist_switch_operator.
 
 
 The Docket image is listening on port TCP8000
