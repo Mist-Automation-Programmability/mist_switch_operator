@@ -260,6 +260,19 @@ span.port-text {
     transition: box-shadow background-color 250ms ease-in-out;
 }
 
+/* PORT LIST */
+.port-list-details th {
+    text-align: left;
+}
+.port-list-details td {
+    border-top: 1px solid lightgray;
+}
+.port-list-details td div {
+    line-height: 2em;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
 /* MAT CHECKBOX EXPANDED */
 
 mat-checkbox.expand-checkbox {

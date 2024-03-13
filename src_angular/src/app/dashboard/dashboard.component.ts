@@ -177,12 +177,14 @@ export class DashboardComponent implements OnInit {
   site_id: string = "__any__";
   me: string = "";
 
-  topBarLoading = false;
-  deviceLoading = false;
+  modal_opened: boolean = false;
+  topbar_loading: boolean = false;
+  device_loading: boolean = false;
 
   editingDevice = null;
   editingDeviceSettings = null;
   selectedPorts = [];
+  selectedLacps = [];
   editingPortNames = [];
   editingPortsStatus = {};
   displayedPorts = {};
@@ -192,12 +194,12 @@ export class DashboardComponent implements OnInit {
   portsInAe = [];
 
   filteredDevicesDatabase: MatTableDataSource<DeviceElement> | null;
-  selectedPortsStats: MatTableDataSource<DeviceElement> | null;
+  selectedPortsStats=[];
   devices: DeviceElement[] = []
 
   resultsLength = 0;
   displayedColumns: string[] = ["device"];
-  displayedStatsColumns: string[] = ['port_id', 'up', 'media_type', 'neighbor_system_name', 'neighbor_mac', 'neighbor_port_desc'];
+  displayedStatsColumns: string[] = ['port_id', 'lacp_id', 'up', 'media_type', 'neighbor_system_name', 'neighbor_mac', 'neighbor_port_desc'];
   private _subscription: Subscription
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -244,7 +246,7 @@ export class DashboardComponent implements OnInit {
     body = { host: this.host, cookies: this.cookies, headers: this.headers, site_id: this.site_id, full: true }
 
     if (body) {
-      this.topBarLoading = true;
+      this.topbar_loading = true;
       this._http.post<DeviceElement[]>('/api/devices/', body).subscribe({
         next: data => {
           data["results"].forEach(element => {
@@ -255,7 +257,7 @@ export class DashboardComponent implements OnInit {
           this.filteredDevicesDatabase = new MatTableDataSource(data["results"]);
 
           this.filteredDevicesDatabase.paginator = this.paginator;
-          this.topBarLoading = false;
+          this.topbar_loading = false;
         },
         error: error => {
           var message: string = "There was an error... "
@@ -283,7 +285,7 @@ export class DashboardComponent implements OnInit {
   }
 
   private getDeviceSettings(): void {
-    this.deviceLoading = true
+    this.device_loading = true
     this._http.post<any>('/api/devices/settings/', {
       host: this.host,
       cookies: this.cookies,
@@ -294,12 +296,12 @@ export class DashboardComponent implements OnInit {
       next: data => {
         this.editingDeviceSettings = data;
         this.displayedPorts = data.ports;
-        this.deviceLoading = false;
+        this.device_loading = false;
         this.selectedPorts = [];
         this.correlate_ports();
       },
       error: error => {
-        this.deviceLoading = false
+        this.device_loading = false
         var message: string = "Unable to load settings for the Device " + this.editingDevice.mac + "... "
         if ("error" in error) { message += error["error"]["message"] }
         this.openError(message)
@@ -390,7 +392,7 @@ export class DashboardComponent implements OnInit {
 
 
   private correlate_ports(): void {
-    if (Object.keys(this.displayedPorts).length > 0 && Object.keys(this.editingPortsStatus).length > 0) {
+    if (Object.keys(this.displayedPorts).length > 0) {
       //example { "0/0/0": "ge-0/0/0", "0/0/1": "xe-0/0/1"}
       var interface_mapping = {};
       Object.keys(this.editingPortsStatus).forEach(status_port => {
@@ -425,7 +427,7 @@ export class DashboardComponent implements OnInit {
         this.correlate_ports();
       },
       error: error => {
-        this.deviceLoading = false
+        this.device_loading = false
         var message: string = "Unable to load ports status for the Device " + this.editingDevice.mac + "... "
         if ("error" in error) { message += error["error"]["message"] }
         this.openError(message)
@@ -458,9 +460,12 @@ export class DashboardComponent implements OnInit {
     if (this.readonlyPorts.indexOf(port_name) < 0) {
       let port = this.editingDeviceSettings.ports[port_name];
       let port_names = [];
+      let ae_uuid:string;
       let selected_ports = 0;
+      // processed if the ports is part of an AE
       if (this.lacpPorts.hasOwnProperty(port_name)) {
-        const ae_uuid = this.lacpPorts[port_name];
+        ae_uuid = this.lacpPorts[port_name];
+        // retrieve the list of other ports belonging to the ae
         for (let [tmp_port, tmp_ae_uuid] of Object.entries(this.lacpPorts)) {
           if (ae_uuid == tmp_ae_uuid) port_names.push(tmp_port);
         }
@@ -469,39 +474,41 @@ export class DashboardComponent implements OnInit {
       }
       selected_ports = port_names.length;
 
-      // DELETE
       if (this.selectedPorts.includes(port)) {
-        port_names.forEach(tmp_port => {
-          let port = this.editingDeviceSettings.ports[tmp_port];
-          this.deletePort(port);
+        // DELETE PORT
+        port_names.forEach(tmp_port_name => {
+          this.deletePort(tmp_port_name);
         });
-        if (this.selectedPorts.length == 1) {
-          this.setPortFields(this.selectedPorts[0]);
-        } else {
-          let ae_uuids = [];
-          this.selectedPorts.forEach(port=>{
-            port_name = port["port"];            
-            if (this.lacpPorts.hasOwnProperty(port_name) && !ae_uuids.includes(this.lacpPorts[port_name])){
-              ae_uuids.push(this.lacpPorts[port_name]);
-            }
-          })
-          if (ae_uuids.length == 1){
-            this.setPortFields(this.selectedPorts[0]);
-          }
+        // DELETE AE
+        if (ae_uuid && this.selectedLacps.includes(ae_uuid)){
+          let index = this.selectedLacps.indexOf(ae_uuid);
+          this.selectedLacps.splice(index, 1);
         }
+
       }
-      // ADD
       else {
+        // ADD PORT
         port_names.forEach(tmp_port => {
           let port = this.editingDeviceSettings.ports[tmp_port];
           this.addPort(port);
         });
-        if (this.selectedPorts.length == selected_ports) {
-          this.setPortFields(this.selectedPorts[0]);
-        } else if (this.selectedPorts.length > 0) {
-          this.setDefaultPortFielts();
+        // ADD AE 
+        if (ae_uuid && !this.selectedLacps.includes(ae_uuid)){
+          this.selectedLacps.push(ae_uuid);
         }
       }
+      // SET PORT SETTINGS IF SINGLE PORT OR AE SELECTED
+      var max_ports = 1;
+      if (this.selectedLacps.length == 1){
+        max_ports = 0;
+        for (let [tmp_port, tmp_ae_uuid] of Object.entries(this.lacpPorts)) {
+          if (this.selectedLacps[0] == tmp_ae_uuid) max_ports += 1;
+        }
+      }
+      if (this.selectedPorts.length == max_ports) this.setPortFields(this.selectedPorts[0]);
+      else this.setDefaultPortFielts();
+      // UPDATE UI
+      console.log(this.selectedLacps)
       this.updateSelectedPortsStatus();
     }
   }
@@ -512,14 +519,16 @@ export class DashboardComponent implements OnInit {
       if (this.editingPortsStatus.hasOwnProperty(port)) tmp.push(this.editingPortsStatus[port])
       else tmp.push({ port_id: port, up: false, media_type: "", neighbor_system_name: "", neighbor_mac: "", neighbor_port_desc: "" })
     })
-    this.selectedPortsStats = new MatTableDataSource(tmp);
+    // this.selectedPortsStats = new MatTableDataSource(tmp);
+    this.selectedPortsStats = tmp;
   }
   // ADD or REMOVE ports from the editing list
   private addPort(port): void {
     this.selectedPorts.push(port);
     this.editingPortNames.push(port.port);
   }
-  private deletePort(port): void {
+  private deletePort(port_name): void {
+    let port = this.editingDeviceSettings.ports[port_name];
     let index = this.selectedPorts.indexOf(port)
     this.selectedPorts.splice(index, 1)
     let indexName = this.editingPortNames.indexOf(port.port)
@@ -531,7 +540,7 @@ export class DashboardComponent implements OnInit {
 
   savePorts(): void {
     this.selectedPorts.forEach(element => {
-      if (this.lacpPorts.hasOwnProperty(element["port"])){
+      if (this.lacpPorts.hasOwnProperty(element["port"])) {
         element["ae_uuid"] = this.lacpPorts[element["port"]];
       };
       element["new_conf"] = {
@@ -557,7 +566,7 @@ export class DashboardComponent implements OnInit {
       }
     })
     if (this.frmPort.valid) {
-      this.topBarLoading = true
+      this.topbar_loading = true
       var body = {
         host: this.host,
         cookies: this.cookies,
@@ -567,15 +576,16 @@ export class DashboardComponent implements OnInit {
         port_config: this.selectedPorts,
         device_id: this.editingDevice.id
       }
+      console.log(body)
       this._http.post<any>('/api/devices/update/', body).subscribe({
         next: data => {
-          this.topBarLoading = false
+          this.topbar_loading = false
           //this.updateFrmDeviceValues(data.result)
           this.getDeviceSettings()
           this.openSnackBar("Device " + this.editingDevice.mac + " successfully updated", "Done")
         },
         error: error => {
-          this.topBarLoading = false
+          this.topbar_loading = false
           var message: string = "Unable to save changes on Device " + this.editingDevice.mac + "... "
           if ("error" in error) { message += error["error"]["message"] }
           this.openError(message)
@@ -625,7 +635,7 @@ export class DashboardComponent implements OnInit {
   //////////////////////////////////////////////////////////////////////////////
   port_tooltip(portName: string): string {
     let tooltip = portName;
-    if (this.display_status(portName)){
+    if (this.display_status(portName)) {
       tooltip += " - UP";
     } else {
       tooltip += " - DOWN";
@@ -698,9 +708,15 @@ export class DashboardComponent implements OnInit {
   //////////////////////////////////////////////////////////////////////////////
   // ERROR
   openError(message: string): void {
-    const dialogRef = this._dialog.open(ErrorDialog, {
-      data: message
-    });
+    if (!this.modal_opened) {
+      this.modal_opened = true;
+      const dialogRef = this._dialog.open(ErrorDialog, {
+        data: message
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        this.modal_opened = false;
+      });
+    }
   }
 
   // SNACK BAR
