@@ -12,8 +12,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 ## Features
-<img src="._readme/img/info.png"  width="45%"  />
-<img src="._readme/img/config.png"  width="45%"  />
+<img src="https://github.com/Mist-Automation-Programmability/mist_switch_operator/raw/main/._readme/img/info.png"  width="60%"  />
+<img src="https://github.com/Mist-Automation-Programmability/mist_switch_operator/raw/main/._readme/img/config.png"  width="60%"  />
 
 - list switches
 - display basic switch info
@@ -32,7 +32,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 - Virtual Chassis support
 - Leverage the "no_local_overwrite" setting from Mist to block the ports configuration from this tool:
 
-![no_local_overwrite setting](._readme/image.png)
+![no_local_overwrite setting](https://github.com/Mist-Automation-Programmability/mist_switch_operator/raw/main/._readme/image.png)
 
 
 
