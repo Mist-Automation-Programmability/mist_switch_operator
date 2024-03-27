@@ -193,6 +193,10 @@
                                 <mat-card-title class="info-title">Switch Info</mat-card-title>
                                 <table class="member-details">
                                     <tr>
+                                        <th>Name</th>
+                                        <td>{{editingDeviceSettings.info.name}}</td>
+                                    </tr>
+                                    <tr>
                                         <th>Status</th>
                                         <td>
                                             <div *ngIf="editingDeviceSettings.info.status == 'connected'" style="color: #6f9d2c">{{editingDeviceSettings.info.status}}</div>

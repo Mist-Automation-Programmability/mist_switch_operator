@@ -34,11 +34,10 @@ except:
     mist_hosts = ast.literal_eval(
         os.environ.get(
             "MIST_HOSTS",
-            default='{"Global 01 - manage.mist.com": "api.mist.com", "Global 02 - manage.gc1.mist.com": "api.gc1.mist.com", "Global 03 - manage.ac2.mist.com": "api.ac2.mist.com","Global 04 - manage.gc2.mist.com": "api.gc2.mist.com", "EMEA 01 - manage.eu.mist.com": "api.eu.mist.com"}',
+            default='{"Global 01 - manage.mist.com": "api.mist.com", "Global 02 - manage.gc1.mist.com": "api.gc1.mist.com", "Global 03 - manage.ac2.mist.com": "api.ac2.mist.com","Global 04 - manage.gc2.mist.com": "api.gc2.mist.com", "EMEA 01 - manage.eu.mist.com": "api.eu.mist.com", "EMEA 02 - manage.gc3.mist.com": "api.gc3.mist.com", "APAC 01 - manage.ac5.mist.com": "api.ac5.mist.com"}',
         )
     )
 
-DEVICES_MODELS = []
 
 
 ##########
@@ -54,13 +53,8 @@ def get_devices(request):
 
 @csrf_exempt
 def get_device_settings(request):
-    global DEVICES_MODELS
     if request.method == "POST":
-        if not DEVICES_MODELS:
-            body_unicode = request.body.decode("utf-8")
-            body = json.loads(body_unicode)
-            _get_devices_models(body["host"], body["headers"], body["cookies"])
-        response = Devices().get_device_settings(request.body, DEVICES_MODELS)
+        response = Devices().get_device_settings(request.body)
         return JsonResponse(status=response["status"], data=response["data"])
     else:
         return Http404
@@ -112,15 +106,8 @@ def get_sites(request):
 
 ##########
 # LOGIN
-def _get_devices_models(host, headers={}, cookies=None):
-    global DEVICES_MODELS
-    url = f"https://{host}/api/v1/const/device_models?type=switch"
-    resp = requests.get(url, headers=headers, cookies=cookies)
-    if resp.status_code == 200:
-        DEVICES_MODELS = resp.json()
-
 def _get_self(request, host, method, headers={}, cookies=None):
-    if cookies == None:
+    if cookies is None:
         cookies_dict = None
     else:
         cookies_dict = cookies.get_dict()
@@ -150,7 +137,6 @@ def login(request):
                     "Authorization": "Token " + body["token"],
                     "Content-Type": "application/json",
                 }
-                _get_devices_models(body["host"], headers)
                 return _get_self(request, body["host"], "token", headers=headers)
 
             elif "email" in body and "password" in body:
@@ -163,7 +149,6 @@ def login(request):
 
                 if resp.status_code == 200:
                     cookies = resp.cookies
-                    _get_devices_models(body["host"], headers, cookies)
                     return _get_self(
                         request,
                         body["host"],
