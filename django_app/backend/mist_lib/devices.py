@@ -214,7 +214,7 @@ class Devices(Common):
 
     def _parse_switch_matching(self,  site_setting, device_name, device_model, device_role):
 
-        if site_setting["switch_matching"].get("enable", False):
+        if site_setting.get("switch_matching", {}).get("enable", False):
             rules = site_setting["switch_matching"].get("rules", {})
             for rule in rules:
                 match = True
