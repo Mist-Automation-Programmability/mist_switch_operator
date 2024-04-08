@@ -213,23 +213,30 @@ class Devices(Common):
                 return self._get_site_template(extract, body, device_name, device_model, device_role, True)
 
     def _parse_switch_matching(self,  site_setting, device_name, device_model, device_role):
+
         if site_setting["switch_matching"].get("enable", False):
             rules = site_setting["switch_matching"].get("rules", {})
             for rule in rules:
                 match = True
                 for key in rule:
-                    if key == "match_model":
-                        if not device_model.startswith(rule[key]):
+                    matching_key = key
+                    value = rule[key]
+                    start = None
+                    end = None
+                    if "[" in key:
+                        matching_key = key.split("[")[0]
+                        sub = key.split("[")[1].replace("]", "").split(":")
+                        start = int(sub[0])
+                        end = int(sub[1])
+
+                    if matching_key == "match_role":
+                        if not device_role == value:
                             match = False
-                    if key == "role_name":
-                        if not device_role == rule[key]:
+                    if matching_key == "match_model":
+                        if not device_model[start:end] == value:
                             match = False
-                    if key.startswith("match_name"):
-                        sub = rule[key].replace(
-                            "match_name[", "").replace("]", "").split(":")
-                        start = sub[0]
-                        end = sub[1]
-                        if not device_name[start:end] == rule[key]:
+                    if matching_key == "match_name":
+                        if not device_name[start:end] == value:
                             match = False
                 if match and "port_config" in rule:
                     return rule["port_config"]
