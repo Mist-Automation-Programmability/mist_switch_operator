@@ -25,6 +25,7 @@ export class ConnectorService {
 
   constructor() {}
 
+
   headersSet(data: {}) {
     this.headersSource.next(data)
   }

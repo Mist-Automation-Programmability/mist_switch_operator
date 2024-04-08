@@ -83,9 +83,13 @@ class Devices(Common):
         if not "device_id" in body:
             return {"status": 500, "data": {"message": "device_id missing"}}
         extract = self.extractAuth(body)
-        device_settings = self._get_device_settings(extract, body)
+        device_data = self._get_device_settings(extract, body)
+        device_settings = device_data["device_settings"]
+        device_name = device_data["name"]
+        device_model = device_data["model"]
+        device_role = device_data["role"]
         device_stats = self._get_device_stats(extract, body)
-        site_settings = self._get_site_template(extract, body)
+        site_settings = self._get_site_template(extract, body, device_name, device_model, device_role)
         networks = self._generate_networks(site_settings, device_settings)
         if not "status" in device_settings and not "status" in site_settings:
             data = self._generate_device_settings(
@@ -112,10 +116,15 @@ class Devices(Common):
 
     def _get_device_settings(self, extract, body, retry=False):
         device_id = body["device_id"]
-        device_config = {
+        device_data = {
+        "device_settings" :{
             "networks": {},
             "port_usages": {},
             "port_config": {}
+        },
+        "name": "",
+        "model": "",
+        "role": ""
         }
         try:
             logging.info(f"Device:{device_id}:Settings: In Process")
@@ -123,15 +132,18 @@ class Devices(Common):
             resp = requests.get(
                 url, headers=extract["headers"], cookies=extract["cookies"])
             device_setting = resp.json()
-            device_config["ip_config"] = device_setting.get("ip_config", {})
-            device_config["oob_ip_config"] = device_setting.get("oob_ip_config", {})
-            device_config["other_ip_configs"] = device_setting.get("other_ip_configs", {})
-            device_config["managed"] = device_setting.get("managed", False)
-            device_config["networks"] = device_setting.get("networks", {})
-            device_config["port_usages"] = device_setting.get("port_usages", {})
-            device_config["port_config"] = device_setting.get("port_config", {})
+            device_data["device_settings"]["ip_config"] = device_setting.get("ip_config", {})
+            device_data["device_settings"]["oob_ip_config"] = device_setting.get("oob_ip_config", {})
+            device_data["device_settings"]["other_ip_configs"] = device_setting.get("other_ip_configs", {})
+            device_data["device_settings"]["managed"] = device_setting.get("managed", False)
+            device_data["device_settings"]["networks"] = device_setting.get("networks", {})
+            device_data["device_settings"]["port_usages"] = device_setting.get("port_usages", {})
+            device_data["device_settings"]["port_config"] = device_setting.get("port_config", {})
+            device_data["name"] = device_setting.get("name", "")
+            device_data["model"] = device_setting.get("model", "")
+            device_data["role"] = device_setting.get("role", "")
             logging.info(f"Device:{device_id}:Settings: Done")
-            return device_config
+            return device_data
         except:
             if retry:
                 logging.error(f"Device:{device_id}:Settings: Error")
@@ -181,7 +193,7 @@ class Devices(Common):
                 logging.warning(f"Device:Retreiving Device Models: Retry")
                 return self._get_device_stats(extract, True)
 
-    def _get_site_template(self, extract, body, retry=False):
+    def _get_site_template(self, extract, body, device_name, device_model, device_role, retry=False):
         site_id = body["site_id"]
         try:
             logging.info(f"Site:{site_id}:Settings: In Process")
@@ -190,7 +202,7 @@ class Devices(Common):
                 url, headers=extract["headers"], cookies=extract["cookies"])
             site_setting = resp.json()
             logging.info(f"Site:{site_id}:Settings: Done")
-            return self._parse_site_template(body, site_setting)
+            return self._parse_site_template( site_setting, device_name, device_model, device_role)
         except:
             print("Exception occurred", exc_info=True)
             if retry:
@@ -198,38 +210,36 @@ class Devices(Common):
                 return {"status": 500, "data": {"message": "Unable to retrieve the site settings"}}
             else:
                 logging.warning(f"Site:{site_id}:Settings: Retry")
-                return self._get_site_template(extract, body, True)
+                return self._get_site_template(extract, body, device_name, device_model, device_role, True)
 
-    def _parse_site_template(self, body, site_setting):
+    def _parse_switch_matching(self,  site_setting, device_name, device_model, device_role):
+        if site_setting["switch_matching"].get("enable", False):
+            rules = site_setting["switch_matching"].get("rules", {})
+            for rule in rules:
+                match = True
+                for key in rule:
+                    if key == "match_model":
+                        if not device_model.startswith(rule[key]):
+                            match = False
+                    if key == "role_name":
+                        if not device_role == rule[key]:
+                            match = False
+                    if key.startswith("match_name"):
+                        sub = rule[key].replace(
+                            "match_name[", "").replace("]", "").split(":")
+                        start = sub[0]
+                        end = sub[1]
+                        if not device_name[start:end] == rule[key]:
+                            match = False
+                if match and "port_config" in rule:
+                    return rule["port_config"]
+        return {}
+
+    def _parse_site_template(self,  site_setting, device_name, device_model, device_role):
         site_networks = site_setting.get("networks", {})
         site_port_usages = site_setting.get("port_usages", {})
+        site_port_config = self._parse_switch_matching( site_setting, device_name, device_model, device_role)
         if "switch_matching" in site_setting:
-            device_name = body.get("device_name","")
-            device_role = body.get("device_role", "")
-            device_model = body.get("device_model", "")
-            site_port_config = {}
-            if site_setting["switch_matching"].get("enable", False):
-                rules = site_setting["switch_matching"].get("rules", {})
-
-                for rule in rules:
-                    match = True
-                    for key in rule:
-                        if key == "match_model":
-                            if not device_model.startswith(rule[key]):
-                                match = False
-                        if key == "role_name":
-                            if not device_role == rule[key]:
-                                match = False
-                        if key.startswith("match_name"):
-                            sub = rule[key].replace(
-                                "match_name[", "").replace("]", "").split(":")
-                            start = sub[0]
-                            end = sub[1]
-                            if not device_name[start:end] == rule[key]:
-                                match = False
-                    if match and "port_config" in rule:
-                        site_port_config = rule["port_config"]
-                        break
             return {
                 "port_config": site_port_config,
                 "networks": site_networks,

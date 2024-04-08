@@ -168,12 +168,14 @@ export class LoginComponent implements OnInit {
     }
   }
   submit2FA(twoFactor: number): void {
-    if (this.check_host()) {
+    if (this.check_host() && twoFactor) {
       this.loading = true;
       this._http.post<any>('/api/login/', { host: this.frmStepLogin.value.host, email: this.frmStepLogin.value.credentials.email, password: this.frmStepLogin.value.credentials.password, two_factor: twoFactor }).subscribe({
         next: data => this.parse_response(data),
         error: error => this.error_message("credentials", error.error.message)      
       })
+    } else {
+      this.loading = false;
     }
   }
 

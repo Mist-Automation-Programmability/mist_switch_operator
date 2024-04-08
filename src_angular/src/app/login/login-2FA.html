@@ -11,9 +11,12 @@
     input[type=number] {
         -moz-appearance: textfield;
     }
+    input.mat-mdc-input-element{
+        margin-top: .5em;
+    }
 </style>
 <h1 mat-dialog-title>2FA Code Required</h1>
-<div mat-dialog-content>
+<div mat-dialog-content style="padding-top: 0.5em">
     <mat-form-field appearance="outline">
         <mat-label>Code</mat-label>
         <input matInput type="number" [(ngModel)]="twoFactor" (keydown.enter)="close2FA()" cdkFocusInitial/>

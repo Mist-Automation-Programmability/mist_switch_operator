@@ -337,7 +337,7 @@ export class DashboardComponent implements OnInit {
     this.availablePorts.sort((port_a, port_b) => {
       if (port_a.includes("-")) port_a = port_a.split("-")[1]
       if (port_b.includes("-")) port_b = port_b.split("-")[1]
-      if (!port_a < port_b) {
+      if (port_a < port_b) {
         return -1
       } else if (port_a > port_b) {
         return 1
@@ -619,13 +619,11 @@ export class DashboardComponent implements OnInit {
       else if (port_usage in this.editingDeviceSettings.site.port_usages) {
         port_config = this.editingDeviceSettings.site.port_usages[port_usage]
       }
-      console.log(port_config)
       // setting the config object with the port_usage settings
       for (var key in port_config) {
         config[key] = port_config[key]
       }
     }
-    console.log(config)
     this.updateFrmDeviceValues(config)
   }
 
